@@ -1,0 +1,31 @@
+{
+  "name": "shadi-saloon-customer-app",
+  "version": "2.0.0",
+  "main": "server.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "start": "node server.js",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  },
+  "description": "SHADI SALOON — standalone customer-facing app (booking wizard + branch showcase), built with React + Vite + TypeScript. Calls the main SHADI SALOON backend over the network; has no data of its own.",
+  "engines": {
+    "node": ">=18"
+  },
+  "private": true
+}

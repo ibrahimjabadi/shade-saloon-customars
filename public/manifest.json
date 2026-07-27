@@ -1,0 +1,36 @@
+{
+  "name": "SHADI SALOON",
+  "short_name": "SHADI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F0F10",
+  "theme_color": "#C7A96B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "description": "Book your visit and browse SHADI SALOON branches, services, and staff."
+}
