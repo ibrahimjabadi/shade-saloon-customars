@@ -193,7 +193,7 @@ export function HomeView() {
     <>
       <BranchSwitcher />
       <div
-        className="home-hero"
+        className={`home-hero${branch.galleryPhotos?.[0] ? " has-photo" : ""}`}
         style={
           branch.galleryPhotos?.[0]
             ? {

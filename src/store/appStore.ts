@@ -16,7 +16,7 @@ import type {
 import type { Lang } from "../i18n/translations";
 import { nextDays } from "../utils/businessHours";
 
-export type Tab = "home" | "bookings" | "profile";
+export type Tab = "home" | "bookings" | "homeVisit" | "profile";
 export type HomeTab = "services" | "photos" | "staff" | "info";
 
 export interface BookingWizardState {

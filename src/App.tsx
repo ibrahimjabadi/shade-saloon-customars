@@ -9,6 +9,7 @@ import { ConfigErrorScreen } from "./components/ConfigErrorScreen";
 import { HomeView } from "./components/home/HomeView";
 import { BookingsView } from "./components/bookings/BookingsView";
 import { ProfileView } from "./components/profile/ProfileView";
+import { HomeVisitView } from "./components/homevisit/HomeVisitView";
 import { BookingOverlay } from "./components/booking/BookingOverlay";
 import { RescheduleOverlay } from "./components/bookings/RescheduleOverlay";
 import { displayError } from "./utils/errorDisplay";
@@ -66,6 +67,7 @@ export default function App() {
       <Shell>
         {tab === "home" && <HomeView />}
         {tab === "bookings" && <BookingsView />}
+        {tab === "homeVisit" && <HomeVisitView />}
         {tab === "profile" && <ProfileView />}
       </Shell>
       {booking && <BookingOverlay />}

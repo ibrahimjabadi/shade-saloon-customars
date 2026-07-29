@@ -7,6 +7,8 @@
 
 const ar = {
   home: "الرئيسية", myBookings: "حجوزاتي", profile: "حسابي",
+  homeVisitTab: "منزلي", homeVisitTitle: "الحجز المنزلي",
+  homeVisitComingSoon: "قريبًا", homeVisitComingSoonHint: "رح نضيف تفاصيل حجز زيارة الحلاق لمنزلك قريبًا.",
   services: "الخدمات", staff: "الفريق", photos: "الصور", info: "معلومات",
   book: "احجز", added: "مضافة", bookNow: "احجز الآن", min: "دقيقة",
   noPhotos: "لا توجد صور بعد", noServices: "لا توجد خدمات معروضة بعد", noStaff: "لا يوجد فريق معروض بعد",
@@ -46,6 +48,8 @@ const ar = {
 
 const en: Record<keyof typeof ar, string> = {
   home: "Home", myBookings: "My Bookings", profile: "Profile",
+  homeVisitTab: "Home visit", homeVisitTitle: "Home Visit Booking",
+  homeVisitComingSoon: "Coming soon", homeVisitComingSoonHint: "Booking a barber to visit your home will be available here soon.",
   services: "Services", staff: "Team", photos: "Photos", info: "Info",
   book: "Book", added: "Added", bookNow: "Book now", min: "min",
   noPhotos: "No photos yet", noServices: "No services listed yet", noStaff: "No team members listed yet",

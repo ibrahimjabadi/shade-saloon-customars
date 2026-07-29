@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useAppStore, type Tab } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
-import { IconCalendar, IconHome, IconUser } from "./icons";
+import { IconCalendar, IconHome, IconHomeVisit, IconUser } from "./icons";
 
 function TabButton({ id, icon, label }: { id: Tab; icon: ReactNode; label: string }) {
   const active = useAppStore((s) => s.tab === id);
@@ -28,6 +28,7 @@ export function TabBar() {
     <div className="app-tabbar" role="tablist" aria-label={lang === "ar" ? "التنقل الرئيسي" : "Main navigation"}>
       <TabButton id="home" icon={<IconHome />} label={tr("home")} />
       <TabButton id="bookings" icon={<IconCalendar />} label={tr("myBookings")} />
+      <TabButton id="homeVisit" icon={<IconHomeVisit />} label={tr("homeVisitTab")} />
       <TabButton id="profile" icon={<IconUser />} label={tr("profile")} />
     </div>
   );

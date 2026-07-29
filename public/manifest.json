@@ -3,8 +3,8 @@
   "short_name": "SHADI",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0F0F10",
-  "theme_color": "#C7A96B",
+  "background_color": "#F6F6F3",
+  "theme_color": "#9C7A3C",
   "orientation": "portrait-primary",
   "icons": [
     {

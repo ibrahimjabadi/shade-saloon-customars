@@ -17,6 +17,15 @@ export function IconCalendar() {
   );
 }
 
+export function IconHomeVisit() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 21s7-7.2 7-12.2a7 7 0 1 0-14 0C5 13.8 12 21 12 21Z" />
+      <circle cx="12" cy="8.8" r="2.6" />
+    </svg>
+  );
+}
+
 export function IconUser() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">

@@ -7,4 +7,4 @@
 //
 // Leave it empty only if you are testing this app on the exact same
 // domain as the backend (not the normal case for this package).
-window.SHADI_API_BASE = "https://shadi-saloon-backend-v12.onrender.com";
+window.SHADI_API_BASE = "https://shadi-saloon-webapp.onrender.com";
