@@ -4,33 +4,31 @@ import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { favoriteKey, type ProfileType } from "../../utils/explorePosts";
 import type { GalleryPhoto } from "../../api/types";
+import { resolveMediaUrl } from "../../utils/media";
 
 function useOwner(type: ProfileType, id: string) {
   const branches = useAppStore((s) => s.branches);
+  const barbers = useAppStore((s) => s.barbers);
   if (type === "branch") {
     const branch = branches.find((b) => b.id === id);
     if (!branch) return null;
     return {
       name: branch.name,
-      avatarUrl: branch.galleryPhotos?.[0]?.url,
+      avatarUrl: resolveMediaUrl(branch.galleryPhotos?.[0]?.url),
       bio: branch.descriptionAr || branch.description,
       photos: branch.galleryPhotos || [],
       branchId: branch.id,
     };
   }
-  for (const branch of branches) {
-    const staff = (branch.staff || []).find((s) => s.id === id);
-    if (staff) {
-      return {
-        name: staff.name,
-        avatarUrl: staff.photoUrl,
-        bio: staff.title,
-        photos: staff.portfolioPhotos || [],
-        branchId: branch.id,
-      };
-    }
-  }
-  return null;
+  const barber = barbers.find((b) => b.id === id);
+  if (!barber) return null;
+  return {
+    name: barber.name,
+    avatarUrl: resolveMediaUrl(barber.photoUrl),
+    bio: barber.title,
+    photos: barber.portfolioPhotos || [],
+    branchId: barber.branchId,
+  };
 }
 
 export function ProfileModal({ type, id, onClose }: { type: ProfileType; id: string; onClose: () => void }) {
@@ -101,7 +99,7 @@ export function ProfileModal({ type, id, onClose }: { type: ProfileType; id: str
           <div className="explore-grid">
             {owner.photos.map((p: GalleryPhoto, i: number) => (
               <div className="explore-tile" key={i} style={{ cursor: "default" }}>
-                <img src={p.url} alt={p.caption || ""} loading="lazy" />
+                <img src={resolveMediaUrl(p.url)} alt={p.caption || ""} loading="lazy" />
               </div>
             ))}
           </div>

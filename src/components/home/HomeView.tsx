@@ -6,13 +6,16 @@ import { OpenStatusBadge, HoursTable } from "./BusinessHours";
 import { AmenitiesGrid } from "./amenities";
 import { StaffLightbox } from "./StaffLightbox";
 import { useState } from "react";
-import type { Service, StaffMember } from "../../api/types";
+import type { Barber, Service } from "../../api/types";
+import { branchBarbers, branchServices } from "../../utils/branchCatalog";
+import { resolveMediaUrl } from "../../utils/media";
 
 function BranchSwitcher() {
   const branches = useAppStore((s) => s.branches);
   const branchId = useAppStore((s) => s.branchId);
   const switchBranch = useAppStore((s) => s.switchBranch);
-  if (branches.length <= 1) return null;
+  const showBranches = useAppStore((s) => s.settings?.showCustomerBranches !== false);
+  if (branches.length <= 1 || !showBranches) return null;
   return (
     <div className="branch-switcher">
       {branches.map((br) => (
@@ -78,23 +81,23 @@ function PhotosPanel({ photos }: { photos: { url: string; caption?: string }[] |
     <div className="gallery-grid">
       {photos.map((p, i) => (
         <div className="gallery-item" key={i}>
-          <img src={p.url} alt={p.caption || ""} loading="lazy" />
+          <img src={resolveMediaUrl(p.url)} alt={p.caption || ""} loading="lazy" />
         </div>
       ))}
     </div>
   );
 }
 
-function StaffPanel({ staff, onOpen }: { staff: StaffMember[] | undefined; onOpen: (id: string) => void }) {
+function StaffPanel({ staff, onOpen }: { staff: Barber[]; onOpen: (id: string) => void }) {
   const { tr } = useTranslation();
-  if (!staff?.length) return <p className="muted">{tr("noStaff")}</p>;
+  if (!staff.length) return <p className="muted">{tr("noStaff")}</p>;
   return (
     <div className="staff-grid">
       {staff.map((s) => (
         <div className="staff-card" key={s.id} onClick={() => onOpen(s.id)}>
           <div
             className="staff-photo"
-            style={s.photoUrl ? { backgroundImage: `url('${s.photoUrl}')` } : undefined}
+            style={s.photoUrl ? { backgroundImage: `url('${resolveMediaUrl(s.photoUrl)}')` } : undefined}
           >
             {s.photoUrl ? "" : (s.name || "?").trim()[0] || "?"}
           </div>
@@ -169,6 +172,7 @@ export function HomeView() {
   const branches = useAppStore((s) => s.branches);
   const branchId = useAppStore((s) => s.branchId);
   const services = useAppStore((s) => s.services);
+  const barbers = useAppStore((s) => s.barbers);
   const homeTab = useAppStore((s) => s.homeTab);
   const setHomeTab = useAppStore((s) => s.setHomeTab);
   const openBooking = useAppStore((s) => s.openBooking);
@@ -180,7 +184,8 @@ export function HomeView() {
   const desc = lang === "ar" ? branch.descriptionAr || branch.description : branch.description;
   const hasHours = !!branch.businessHours && typeof branch.businessHours === "object";
   const hasAmenities = Array.isArray(branch.amenities) && branch.amenities.length > 0;
-  const branchServices = branch.services || services.filter((s) => !s.branchId || s.branchId === branch.id);
+  const staff = branchBarbers(barbers, branch.id);
+  const servicesForBranch = branchServices(services, barbers, branch.id);
 
   const tabs: { id: HomeTab; label: string }[] = [
     { id: "services", label: tr("services") },
@@ -197,7 +202,7 @@ export function HomeView() {
         style={
           branch.galleryPhotos?.[0]
             ? {
-                backgroundImage: `linear-gradient(180deg,rgba(10,10,11,.35),rgba(10,10,11,.96)),url('${branch.galleryPhotos[0].url}')`,
+                backgroundImage: `linear-gradient(180deg,rgba(10,10,11,.35),rgba(10,10,11,.96)),url('${resolveMediaUrl(branch.galleryPhotos[0].url)}')`,
               }
             : undefined
         }
@@ -230,9 +235,9 @@ export function HomeView() {
       </div>
 
       <div>
-        {homeTab === "services" && <ServicesPanel services={branchServices} />}
+        {homeTab === "services" && <ServicesPanel services={servicesForBranch} />}
         {homeTab === "photos" && <PhotosPanel photos={branch.galleryPhotos} />}
-        {homeTab === "staff" && <StaffPanel staff={branch.staff} onOpen={setStaffLightboxId} />}
+        {homeTab === "staff" && <StaffPanel staff={staff} onOpen={setStaffLightboxId} />}
         {homeTab === "info" && (
           <InfoPanel
             description={desc}
@@ -249,7 +254,7 @@ export function HomeView() {
 
       {staffLightboxId && (
         <StaffLightbox
-          staff={(branch.staff || []).find((s) => s.id === staffLightboxId) || null}
+          staff={staff.find((s) => s.id === staffLightboxId) || null}
           onClose={() => setStaffLightboxId(null)}
         />
       )}

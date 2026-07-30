@@ -157,8 +157,19 @@ export const useAppStore = create<AppState>()((set, get) => ({
       const patch: Partial<AppState> = {
         settings: d.settings,
         branches,
-        services: d.services.filter((s) => s.active !== false),
-        barbers: d.barbers.filter((b) => b.active !== false),
+        // customerVisible: the backend delivers every service here (even
+        // ones an admin marked hidden-from-customers) — /api/public/branch/:id
+        // filters this server-side, /api/bootstrap doesn't, so it's filtered
+        // here instead.
+        services: d.services.filter((s) => s.active !== false && s.customerVisible !== false),
+        // frozen/suspended: bootstrap only excludes employeeStatus==="archived"
+        // server-side. A frozen/suspended barber would otherwise show up as
+        // pickable and then silently return zero slots with no explanation —
+        // excluded here so the picker only ever shows barbers who can
+        // actually take a booking.
+        barbers: d.barbers.filter(
+          (b) => b.active !== false && b.employeeStatus !== "frozen" && b.employeeStatus !== "suspended"
+        ),
       };
       // Legacy deep link support: /branch/xyz still preselects that branch.
       const m = window.location.pathname.match(/^\/branch\/([^/]+)/);

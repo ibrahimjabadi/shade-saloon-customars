@@ -4,6 +4,7 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { formatMoney } from "../../utils/money";
 import { buildCalendarLink } from "../../utils/calendar";
 import { downloadIcsFile } from "../../utils/ics";
+import { resolveMediaUrl } from "../../utils/media";
 
 /** `onDone` defaults to the in-branch wizard's own close behavior (this
  * component's original use). The home-visit wizard passes its own — it
@@ -49,7 +50,7 @@ export function SuccessScreen({ booking, onDone }: { booking: Booking; onDone?: 
           <span>{tr("barber")}</span>
           <span className="success-barber">
             {barber.photoUrl && (
-              <span className="success-barber-avatar" style={{ backgroundImage: `url('${barber.photoUrl}')` }} />
+              <span className="success-barber-avatar" style={{ backgroundImage: `url('${resolveMediaUrl(barber.photoUrl)}')` }} />
             )}
             <strong>{barber.name || "-"}</strong>
           </span>

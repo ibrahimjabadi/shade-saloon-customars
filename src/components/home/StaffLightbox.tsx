@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import type { StaffMember } from "../../api/types";
+import type { Barber } from "../../api/types";
 import { useTranslation } from "../../hooks/useTranslation";
+import { resolveMediaUrl } from "../../utils/media";
 
-export function StaffLightbox({ staff, onClose }: { staff: StaffMember | null; onClose: () => void }) {
+export function StaffLightbox({ staff, onClose }: { staff: Barber | null; onClose: () => void }) {
   const { tr, lang } = useTranslation();
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -35,7 +36,7 @@ export function StaffLightbox({ staff, onClose }: { staff: StaffMember | null; o
           <div className="gallery-grid">
             {photos.map((p, i) => (
               <div className="gallery-item" key={i}>
-                <img src={p.url} alt="" />
+                <img src={resolveMediaUrl(p.url)} alt="" />
               </div>
             ))}
           </div>

@@ -15,6 +15,8 @@ export interface Settings {
   marketingConsentEn?: string;
   allowCustomerCancel?: boolean;
   allowCustomerReschedule?: boolean;
+  showCustomerPrices?: boolean;
+  showCustomerBranches?: boolean;
 }
 
 export interface DayHours {
@@ -29,14 +31,6 @@ export interface GalleryPhoto {
   caption?: string;
 }
 
-export interface StaffMember {
-  id: string;
-  name: string;
-  title?: string;
-  photoUrl?: string;
-  portfolioPhotos?: GalleryPhoto[];
-}
-
 export interface Service {
   id: string;
   name: string;
@@ -45,9 +39,13 @@ export interface Service {
   duration: number;
   price: number;
   active?: boolean;
-  branchId?: string;
+  customerVisible?: boolean;
 }
 
+// Services have no branchId of their own — "which services does this branch
+// offer" is derived from the union of serviceIds across the barbers
+// assigned to that branch (see utils/branchCatalog.ts), matching exactly
+// how the backend's own /api/public/branches/:id computes it.
 export interface Branch {
   id: string;
   name: string;
@@ -58,12 +56,16 @@ export interface Branch {
   descriptionAr?: string;
   phone?: string;
   googleMapsUrl?: string;
+  coverPhotoUrl?: string;
+  // businessHours/amenities/timezone are not exposed by the backend to any
+  // customer-facing endpoint today (verified against the live API on
+  // 2026-07-30) — kept optional so the Info tab's hours/amenities sections
+  // activate automatically, with no frontend change, if the backend ever
+  // starts sending them.
   timezone?: string;
   businessHours?: BusinessHours;
   amenities?: string[];
   galleryPhotos?: GalleryPhoto[];
-  staff?: StaffMember[];
-  services?: Service[];
 }
 
 export interface Barber {
@@ -73,6 +75,9 @@ export interface Barber {
   photoUrl?: string;
   branchId: string;
   active?: boolean;
+  employeeStatus?: string;
+  serviceIds?: string[];
+  portfolioPhotos?: GalleryPhoto[];
 }
 
 export interface CustomerAccount {

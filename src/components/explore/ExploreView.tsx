@@ -9,11 +9,12 @@ type Filter = "all" | "favorites";
 export function ExploreView() {
   const { tr } = useTranslation();
   const branches = useAppStore((s) => s.branches);
+  const barbers = useAppStore((s) => s.barbers);
   const favorites = useAppStore((s) => s.favorites);
   const [filter, setFilter] = useState<Filter>("all");
   const [openProfile, setOpenProfile] = useState<{ type: ProfileType; id: string } | null>(null);
 
-  const posts = useMemo(() => buildExplorePosts(branches), [branches]);
+  const posts = useMemo(() => buildExplorePosts(branches, barbers), [branches, barbers]);
   const visible =
     filter === "all" ? posts : posts.filter((p) => favorites.includes(favoriteKey(p.ownerType, p.ownerId)));
 
