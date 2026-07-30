@@ -16,7 +16,7 @@ import type {
 import type { Lang } from "../i18n/translations";
 import { nextDays } from "../utils/businessHours";
 
-export type Tab = "home" | "bookings" | "homeVisit" | "profile";
+export type Tab = "home" | "bookings" | "homeVisit" | "explore" | "profile";
 export type HomeTab = "services" | "photos" | "staff" | "info";
 
 export interface BookingWizardState {
@@ -79,9 +79,16 @@ interface AppState {
   loadMyBookings: () => Promise<void>;
   cancelBooking: (id: string) => Promise<void>;
 
+  // ---- explore (profiles/follow bridge — see memory: no backend follow
+  // concept exists yet, so "following" is a private per-device bookmark
+  // list, not a real synced social feature. Keys are "branch:<id>" or
+  // "barber:<id>"). ----
+  favorites: string[];
+  toggleFavorite: (key: string) => void;
+
   // ---- booking wizard (rendered as a full-screen overlay regardless of tab) ----
   booking: BookingWizardState | null;
-  openBooking: (serviceId?: string) => void;
+  openBooking: (serviceId?: string, barberId?: string) => void;
   closeBooking: () => void;
   toggleBkService: (id: string) => void;
   setBkBarber: (id: string) => void;
@@ -214,13 +221,28 @@ export const useAppStore = create<AppState>()((set, get) => ({
     }
   },
 
+  favorites: (() => {
+    try {
+      return JSON.parse(localStorage.getItem("customerFavorites") || "[]");
+    } catch {
+      return [];
+    }
+  })(),
+  toggleFavorite: (key) =>
+    set((s) => {
+      const has = s.favorites.includes(key);
+      const favorites = has ? s.favorites.filter((k) => k !== key) : [...s.favorites, key];
+      localStorage.setItem("customerFavorites", JSON.stringify(favorites));
+      return { favorites };
+    }),
+
   booking: null,
-  openBooking: (serviceId) =>
+  openBooking: (serviceId, barberId) =>
     set({
       booking: {
         step: 0,
         selectedServices: serviceId ? [serviceId] : [],
-        barberId: "",
+        barberId: barberId || "",
         date: new Date().toISOString().slice(0, 10),
         slot: null,
         cat: "all",

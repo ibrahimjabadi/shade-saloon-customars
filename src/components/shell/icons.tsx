@@ -26,6 +26,15 @@ export function IconHomeVisit() {
   );
 }
 
+export function IconExplore() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m14.8 9.2-2 4.8-4.8 2 2-4.8Z" />
+    </svg>
+  );
+}
+
 export function IconUser() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">

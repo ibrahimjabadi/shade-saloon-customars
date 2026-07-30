@@ -222,3 +222,14 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(-
 .address-map{height:280px;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden}
 .address-map .leaflet-control-attribution{font-size:10px}
 
+/* ---- Explore: photo grid + profile modal ---- */
+.explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.explore-tile{aspect-ratio:1;overflow:hidden;background:var(--surface);cursor:pointer;position:relative}
+.explore-tile img{width:100%;height:100%;object-fit:cover;display:block}
+.explore-tile .owner-tag{position:absolute;inset-inline-start:4px;bottom:4px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:999px}
+.profile-header{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:8px 0 16px}
+.profile-avatar{width:76px;height:76px;border-radius:50%;background-size:cover;background-position:center;background-color:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:26px;color:var(--accent)}
+.profile-type-chip{font-size:11.5px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px}
+.favorite-btn{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:700;cursor:pointer;color:var(--text);display:inline-flex;align-items:center;gap:6px}
+.favorite-btn.active{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+

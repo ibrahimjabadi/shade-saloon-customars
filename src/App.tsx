@@ -10,6 +10,7 @@ import { HomeView } from "./components/home/HomeView";
 import { BookingsView } from "./components/bookings/BookingsView";
 import { ProfileView } from "./components/profile/ProfileView";
 import { HomeVisitView } from "./components/homevisit/HomeVisitView";
+import { ExploreView } from "./components/explore/ExploreView";
 import { BookingOverlay } from "./components/booking/BookingOverlay";
 import { RescheduleOverlay } from "./components/bookings/RescheduleOverlay";
 import { displayError } from "./utils/errorDisplay";
@@ -68,6 +69,7 @@ export default function App() {
         {tab === "home" && <HomeView />}
         {tab === "bookings" && <BookingsView />}
         {tab === "homeVisit" && <HomeVisitView />}
+        {tab === "explore" && <ExploreView />}
         {tab === "profile" && <ProfileView />}
       </Shell>
       {booking && <BookingOverlay />}
