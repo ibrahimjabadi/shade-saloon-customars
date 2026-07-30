@@ -13,7 +13,7 @@ export function HomeVisitWizard() {
   const wizard = useHomeVisitWizard();
   const { state } = wizard;
 
-  if (state.success) return <SuccessScreen booking={state.success} />;
+  if (state.success) return <SuccessScreen booking={state.success} onDone={wizard.reset} />;
 
   const titles: Record<number, string> = {
     [wizard.STEP_ADDRESS]: tr("address"),

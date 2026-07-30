@@ -3,8 +3,15 @@ import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { formatMoney } from "../../utils/money";
 import { buildCalendarLink } from "../../utils/calendar";
+import { downloadIcsFile } from "../../utils/ics";
 
-export function SuccessScreen({ booking }: { booking: Booking }) {
+/** `onDone` defaults to the in-branch wizard's own close behavior (this
+ * component's original use). The home-visit wizard passes its own — it
+ * keeps its success state in local component state, not the global
+ * `booking` store, so it needs to reset that local state instead; without
+ * this override, tapping "تم" there would leave the home-visit tab stuck on
+ * the success screen forever (closeBooking()/setTab() alone don't touch it). */
+export function SuccessScreen({ booking, onDone }: { booking: Booking; onDone?: () => void }) {
   const { tr, lang } = useTranslation();
   const closeBooking = useAppStore((s) => s.closeBooking);
   const setTab = useAppStore((s) => s.setTab);
@@ -14,6 +21,12 @@ export function SuccessScreen({ booking }: { booking: Booking }) {
   const barber = booking.barber || {};
   const svcNames = (booking.services || []).map((s) => s.nameAr || s.name).join("، ");
   const calUrl = buildCalendarLink(booking, branch.name, undefined);
+  const handleDone =
+    onDone ||
+    (() => {
+      closeBooking();
+      setTab("bookings");
+    });
 
   return (
     <div className="success-card">
@@ -55,13 +68,10 @@ export function SuccessScreen({ booking }: { booking: Booking }) {
       <a className="btn secondary" href={calUrl} target="_blank" rel="noopener">
         📅 {tr("addToCalendar")}
       </a>
-      <button
-        className="btn gold"
-        onClick={() => {
-          closeBooking();
-          setTab("bookings");
-        }}
-      >
+      <button className="btn secondary" onClick={() => downloadIcsFile(booking)}>
+        📥 {tr("downloadIcs")}
+      </button>
+      <button className="btn gold" onClick={handleDone}>
         {tr("done")}
       </button>
     </div>
