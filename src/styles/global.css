@@ -217,3 +217,8 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(-
 .skel-card{padding:16px;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px}
 .skel-card .skel-line{height:14px;border-radius:7px;margin-bottom:8px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---- Home visit: address map picker ---- */
+.address-map{height:280px;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden}
+.address-map .leaflet-control-attribution{font-size:10px}
+
