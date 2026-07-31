@@ -106,7 +106,11 @@ export interface CustomerAccount {
   name: string;
   phone: string;
   email?: string;
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
 }
+
+export type VerifyChannel = "email" | "phone";
 
 export interface Slot {
   start: string;

@@ -4,6 +4,7 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { validateEmail, validatePhone } from "../../utils/validators";
 import { resolveErrorMessage } from "../../api/client";
 import { ConsentBlock } from "./ConsentBlock";
+import { COUNTRY_DIAL_CODES, combinePhone } from "../../utils/countryDialCodes";
 
 /** Shared between the standalone Profile tab and the booking wizard's
  * "account" step — in the original vanilla-JS app these were two separate,
@@ -11,11 +12,12 @@ import { ConsentBlock } from "./ConsentBlock";
  * that had to be kept in sync manually. One component now, used from both
  * places via `onRegistered`. */
 export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
-  const { tr } = useTranslation();
+  const { tr, lang } = useTranslation();
   const register = useAppStore((s) => s.register);
   const settings = useAppStore((s) => s.settings);
 
   const [name, setName] = useState("");
+  const [phoneCountry, setPhoneCountry] = useState("962");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -59,7 +61,7 @@ export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
     try {
       await register({
         name,
-        phone,
+        phone: combinePhone(phoneCountry, phone),
         email,
         consent: s.requireCustomerConsent !== false ? consent : true,
         marketingConsent: marketing,
@@ -80,15 +82,28 @@ export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
       </label>
       <label>
         {tr("phone")}
-        <input
-          ref={phoneRef}
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          placeholder="+962 7X XXX XXXX"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
+        <div className="phone-with-country-row">
+          <select
+            value={phoneCountry}
+            onChange={(e) => setPhoneCountry(e.target.value)}
+            aria-label={tr("phoneCountry")}
+          >
+            {COUNTRY_DIAL_CODES.map((c) => (
+              <option key={c.iso} value={c.dial}>
+                {c.flag} +{c.dial} {lang === "ar" ? c.nameAr : c.nameEn}
+              </option>
+            ))}
+          </select>
+          <input
+            ref={phoneRef}
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="7XXXXXXXX"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+        </div>
       </label>
       <label>
         {tr("email")}

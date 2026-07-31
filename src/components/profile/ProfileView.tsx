@@ -1,6 +1,7 @@
 import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { AccountForm } from "./AccountForm";
+import { VerifyAccountBanner } from "./VerifyAccountBanner";
 
 export function ProfileView() {
   const { tr } = useTranslation();
@@ -15,6 +16,7 @@ export function ProfileView() {
           <span className="muted">{account.phone}</span>
           {account.email && <span className="muted">{account.email}</span>}
         </div>
+        <VerifyAccountBanner />
         <button className="btn secondary" style={{ marginTop: 14 }} onClick={logout}>
           {tr("logout")}
         </button>

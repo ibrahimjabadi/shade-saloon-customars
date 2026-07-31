@@ -63,10 +63,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
 .btn.danger:hover{background:rgba(178,59,59,.14)}
 .btn.small{padding:8px 16px;min-height:36px;font-size:13px;width:auto}
 label{display:grid;gap:8px;color:var(--muted);font-size:13px}
-input,textarea{width:100%;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);padding:13px;min-height:44px;transition:border-color .15s ease,box-shadow .15s ease}
-input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+input,textarea,select{width:100%;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);padding:13px;min-height:44px;transition:border-color .15s ease,box-shadow .15s ease;font-family:inherit}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+/* Phone field: country dial-code select + local number input, side by
+   side, so a number isn't forced into Jordan's local format. */
+.phone-with-country-row{display:flex;gap:8px}
+.phone-with-country-row select{flex:0 0 auto;width:auto;max-width:150px}
+.phone-with-country-row input{flex:1;min-width:0}
 .muted{color:var(--muted)}
 .link-btn{background:none;border:none;color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer;padding:4px;font-family:var(--font-ui);font-size:13px}
+.verify-account-card{display:grid;gap:10px}
+.verify-account-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.verify-account-confirm{display:grid;gap:8px}
 
 /* ---- Home: hero + status + tabs + amenities + hours (ported from branch page) ---- */
 .branch-switcher{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}

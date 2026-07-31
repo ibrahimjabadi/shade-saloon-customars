@@ -29,7 +29,7 @@ const ar = {
   openNow: "مفتوح الآن", closedNow: "مغلق الآن", opensAt: "يفتح الساعة", closesAt: "يغلق الساعة",
   sun: "الأحد", mon: "الاثنين", tue: "الثلاثاء", wed: "الأربعاء", thu: "الخميس", fri: "الجمعة", sat: "السبت",
   changeBranch: "فروعنا", barber: "الحلاق", time: "الوقت", account: "حساب الزبون", details: "التأكيد",
-  next: "التالي", back: "رجوع", total: "الإجمالي", name: "الاسم", phone: "رقم الهاتف", email: "الإيميل",
+  next: "التالي", back: "رجوع", total: "الإجمالي", name: "الاسم", phone: "رقم الهاتف", phoneCountry: "رمز الدولة", email: "الإيميل",
   createAccount: "إنشاء / دخول الحساب", logout: "خروج الحساب",
   privacyPolicy: "سياسة الخصوصية والشروط", terms: "الشروط",
   consentAgree: "أوافق على سياسة الخصوصية وشروط الاستخدام", consentRequired: "لازم توافق على سياسة الخصوصية للمتابعة",
@@ -47,7 +47,7 @@ const ar = {
   unsavedTitle: "في اختيارات ما انحفظت", unsavedBody: "إذا سكّرت هلق رح تضيع الخدمات/الموعد اللي اخترته. أكيد بدك تسكّر؟",
   unsavedConfirm: "إي، سكّر", unsavedCancel: "لأ، كمّل",
   errRequiredName: "لازم تكتب الاسم", errRequiredPhone: "لازم تكتب رقم الهاتف",
-  errInvalidPhone: "رقم الهاتف مش صحيح — تأكد إنه بالصيغة الصحيحة (مثال: 07XXXXXXXX)",
+  errInvalidPhone: "رقم الهاتف مش صحيح — تأكد من عدد الأرقام",
   errInvalidEmail: "صيغة الإيميل مش صحيحة",
   errNetwork: "تعذّر الاتصال بالسيرفر — تأكد من اتصالك بالإنترنت وحاول كمان مرة",
   errGeneric: "صار في خطأ غير متوقع، جرّب كمان شوي",
@@ -56,6 +56,11 @@ const ar = {
   cancelConfirmYes: "إي، ألغِ الحجز", cancelConfirmNo: "تراجع",
   rescheduleTitle: "اختار موعد جديد", rescheduleConfirm: "تأكيد الموعد الجديد",
   rescheduleSuccess: "تم تعديل الموعد بنجاح",
+  verifyAccountTitle: "أكّد حسابك", verified: "تم التأكيد",
+  verifyEmailPending: "لسا ما أكّدت إيميلك", verifyPhonePending: "لسا ما أكّدت رقم هاتفك",
+  sendCode: "إرسال رمز التأكيد", resendCode: "إعادة إرسال الرمز",
+  verificationCodeSentHint: "تم إرسال رمز التأكيد، أدخله هون:", verificationCodePlaceholder: "رمز التحقق",
+  confirmCode: "تأكيد الرمز",
 } as const;
 
 const en: Record<keyof typeof ar, string> = {
@@ -82,7 +87,7 @@ const en: Record<keyof typeof ar, string> = {
   openNow: "Open now", closedNow: "Closed now", opensAt: "Opens at", closesAt: "Closes at",
   sun: "Sunday", mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday", fri: "Friday", sat: "Saturday",
   changeBranch: "Our branches", barber: "Barber", time: "Time", account: "Customer account", details: "Confirm",
-  next: "Next", back: "Back", total: "Total", name: "Name", phone: "Phone", email: "Email",
+  next: "Next", back: "Back", total: "Total", name: "Name", phone: "Phone", phoneCountry: "Country code", email: "Email",
   createAccount: "Create / login account", logout: "Logout",
   privacyPolicy: "Privacy policy & terms", terms: "Terms",
   consentAgree: "I agree to the privacy policy and terms of use", consentRequired: "Please agree to the privacy policy to continue",
@@ -100,7 +105,7 @@ const en: Record<keyof typeof ar, string> = {
   unsavedTitle: "You have unsaved selections", unsavedBody: "Closing now will lose the services/time you picked. Close anyway?",
   unsavedConfirm: "Yes, close", unsavedCancel: "No, continue",
   errRequiredName: "Please enter your name", errRequiredPhone: "Please enter your phone number",
-  errInvalidPhone: "That phone number doesn't look right — check the format (e.g. 07XXXXXXXX)",
+  errInvalidPhone: "That phone number doesn't look right — check the digit count",
   errInvalidEmail: "That email address doesn't look right",
   errNetwork: "Couldn't reach the server — check your connection and try again",
   errGeneric: "Something unexpected went wrong, please try again shortly",
@@ -109,6 +114,11 @@ const en: Record<keyof typeof ar, string> = {
   cancelConfirmYes: "Yes, cancel it", cancelConfirmNo: "Never mind",
   rescheduleTitle: "Choose a new time", rescheduleConfirm: "Confirm new time",
   rescheduleSuccess: "Booking rescheduled successfully",
+  verifyAccountTitle: "Verify your account", verified: "Verified",
+  verifyEmailPending: "Your email isn't verified yet", verifyPhonePending: "Your phone number isn't verified yet",
+  sendCode: "Send verification code", resendCode: "Resend code",
+  verificationCodeSentHint: "Verification code sent — enter it below:", verificationCodePlaceholder: "Verification code",
+  confirmCode: "Confirm code",
 };
 
 export const translations = { ar, en };

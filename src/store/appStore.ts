@@ -12,6 +12,7 @@ import type {
   Service,
   Settings,
   Slot,
+  VerifyChannel,
 } from "../api/types";
 import type { Lang } from "../i18n/translations";
 import { nextDays } from "../utils/businessHours";
@@ -52,6 +53,8 @@ interface AppState {
   account: CustomerAccount | null;
   register: (payload: RegisterPayload) => Promise<RegisterResponse>;
   logout: () => void;
+  sendVerification: (channel: VerifyChannel) => Promise<void>;
+  confirmVerification: (channel: VerifyChannel, code: string) => Promise<void>;
 
   // ---- bootstrap / catalog ----
   settings: Settings | null;
@@ -142,6 +145,22 @@ export const useAppStore = create<AppState>()((set, get) => ({
   logout: () => {
     authStorage.clear();
     set({ token: "", account: null, myBookings: null });
+  },
+  sendVerification: async (channel) => {
+    await api<{ ok: boolean }>("/api/customer/verify/send", {
+      method: "POST",
+      token: get().token,
+      body: JSON.stringify({ channel }),
+    });
+  },
+  confirmVerification: async (channel, code) => {
+    const res = await api<{ ok: boolean; account: CustomerAccount }>("/api/customer/verify/confirm", {
+      method: "POST",
+      token: get().token,
+      body: JSON.stringify({ channel, code }),
+    });
+    authStorage.save(get().token, res.account);
+    set({ account: res.account });
   },
 
   settings: null,
