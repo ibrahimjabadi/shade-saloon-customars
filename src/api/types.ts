@@ -17,6 +17,28 @@ export interface Settings {
   allowCustomerReschedule?: boolean;
   showCustomerPrices?: boolean;
   showCustomerBranches?: boolean;
+  customerPortalTheme?: CustomerPortalTheme;
+}
+
+// Admin-configurable branding/layout for this app, set from the backend's
+// Settings > Customer portal section. Every field is optional — an owner
+// who hasn't touched this section yet gets the built-in defaults (see
+// applyPortalAccentColor in App.tsx for the color, and the `!== false`
+// checks at each showXTab call site for the section-visibility defaults).
+export interface CustomerPortalTheme {
+  accentColor?: string;
+  ctaLabelAr?: string;
+  ctaLabelEn?: string;
+  showServicesTab?: boolean;
+  showPhotosTab?: boolean;
+  showStaffTab?: boolean;
+  showInfoTab?: boolean;
+  social?: {
+    instagram?: string;
+    whatsapp?: string;
+    facebook?: string;
+    tiktok?: string;
+  };
 }
 
 export interface DayHours {

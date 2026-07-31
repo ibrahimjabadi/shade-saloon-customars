@@ -1,25 +1,24 @@
 /* ===================== SHADI SALOON — global styles =====================
-   Light theme (2026-07-28 redesign): warm ivory page background, white
-   cards, a single flat gold/bronze accent color — replaces the original
-   dark theme with heavy gold gradients. Same original color identity
-   (gold + near-black) is kept as the base, just executed light instead of
-   dark, matching the same redesign already applied to the admin panel.
-   Structure/class names are unchanged from the dark-theme version so no
-   component markup needed to change, only these declarations. */
+   Black/white theme (2026-07-31): ivory page background, white cards, a
+   near-black accent — matches the admin panel's move away from gold.
+   --accent/--accent-soft are also the runtime override target: the admin
+   can set a custom customerPortalTheme.accentColor in Settings, applied
+   via document.documentElement.style.setProperty at boot (see App.tsx) —
+   these :root values are just the default when no override is set. */
 :root{
   --bg:#F6F6F3;--surface:#FFFFFF;--text:#211D14;--muted:#7A7266;--line:rgba(33,29,20,.09);--line-strong:rgba(33,29,20,.16);
-  --accent:#9C7A3C;--accent-ink:#FFFFFF;--accent-soft:rgba(156,122,60,.10);
+  --accent:#1A1A1A;--accent-ink:#FFFFFF;--accent-soft:rgba(26,26,26,.10);
   --success:#2E7D52;--danger:#B23B3B;
-  --radius:16px;--radius-sm:12px;--shadow-md:0 2px 10px rgba(33,29,20,.06);--shadow-gold:0 6px 16px rgba(156,122,60,.20);
+  --radius:16px;--radius-sm:12px;--shadow-md:0 2px 10px rgba(33,29,20,.06);--shadow-gold:0 6px 16px rgba(26,26,26,.20);
   --font-ui:"Cairo","Segoe UI",Tahoma,Arial,sans-serif;--tabbar-h:64px;--topbar-h:56px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:radial-gradient(circle at top left,rgba(156,122,60,.08),transparent 45%),var(--bg);color:var(--text);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+html,body{margin:0;min-height:100%;background:radial-gradient(circle at top left,rgba(26,26,26,.08),transparent 45%),var(--bg);color:var(--text);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit}
 a{color:inherit}
-*{scrollbar-width:thin;scrollbar-color:rgba(156,122,60,.35) transparent}
+*{scrollbar-width:thin;scrollbar-color:rgba(26,26,26,.35) transparent}
 *::-webkit-scrollbar{width:9px;height:9px}
-*::-webkit-scrollbar-thumb{background:rgba(156,122,60,.32);border-radius:99px}
+*::-webkit-scrollbar-thumb{background:rgba(26,26,26,.32);border-radius:99px}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
@@ -31,7 +30,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
   background:rgba(255,255,255,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);
   padding-top:env(safe-area-inset-top);
 }
-.app-logo{height:28px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(156,122,60,.20))}
+.app-logo{height:28px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(26,26,26,.20))}
 .app-lang-btn{border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:999px;padding:7px 13px;font-weight:700;font-size:12.5px;cursor:pointer}
 
 .app-content{flex:1;overflow-y:auto;padding:16px 16px calc(var(--tabbar-h) + 24px)}
@@ -112,7 +111,7 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(-
 
 .hours-table{display:grid;gap:2px}
 .hours-row{display:flex;justify-content:space-between;padding:10px 14px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line)}
-.hours-row.today{border-color:rgba(156,122,60,.35);background:var(--accent-soft)}
+.hours-row.today{border-color:rgba(26,26,26,.35);background:var(--accent-soft)}
 .hours-day{color:var(--muted);font-weight:600}
 .hours-row.today .hours-day{color:var(--accent)}
 .hours-closed{color:var(--muted)}
@@ -129,7 +128,7 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(-
 .booking-card .bk-actions .btn{flex:1;padding:10px;font-size:13.5px;min-height:38px}
 .booking-card .bk-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .bk-status{font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap}
-.bk-status.upcoming{background:rgba(156,122,60,.14);color:var(--accent)}
+.bk-status.upcoming{background:rgba(26,26,26,.14);color:var(--accent)}
 .bk-status.completed{background:rgba(46,125,82,.12);color:var(--success)}
 .bk-status.cancelled{background:rgba(178,59,59,.12);color:var(--danger)}
 .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
@@ -162,7 +161,7 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(-
 .chip.active{background:var(--accent);color:var(--accent-ink);font-weight:700;border-color:transparent}
 
 .item{cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:var(--radius);padding:14px;min-height:44px}
-.item.selected{border-color:var(--accent);background:linear-gradient(135deg,rgba(156,122,60,.14),rgba(156,122,60,.05))}
+.item.selected{border-color:var(--accent);background:linear-gradient(135deg,rgba(26,26,26,.14),rgba(26,26,26,.05))}
 .barber-card{display:flex;align-items:center;gap:12px}
 .barber-avatar{width:44px;height:44px;border-radius:50%;background-size:cover;background-position:center;background-color:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--accent)}
 

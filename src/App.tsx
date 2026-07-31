@@ -16,6 +16,26 @@ import { RescheduleOverlay } from "./components/bookings/RescheduleOverlay";
 import { displayError } from "./utils/errorDisplay";
 import { useTranslation } from "./hooks/useTranslation";
 
+// Applies an admin-configured accent color at runtime (Settings > Customer
+// portal). Derives the same --accent-soft/--shadow-gold tones global.css
+// otherwise hardcodes, plus flips --accent-ink dark if the chosen color is
+// too light for white button text to stay readable on top of it.
+function applyPortalAccentColor(hex?: string) {
+  if (!hex || !/^#[0-9a-f]{6}$/i.test(hex)) return;
+  const root = document.documentElement.style;
+  root.setProperty("--accent", hex);
+  const m = /^#([0-9a-f]{6})$/i.exec(hex)!;
+  const num = parseInt(m[1], 16);
+  const r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
+  root.setProperty("--accent-soft", `rgba(${r},${g},${b},.10)`);
+  root.setProperty("--shadow-gold", `0 6px 16px rgba(${r},${g},${b},.20)`);
+  // Accent-ink (text drawn on top of the accent, e.g. the gold/book button
+  // label) needs to flip to dark if the admin picks a light accent color —
+  // a fixed white would go unreadable on e.g. a pale/yellow accent.
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  root.setProperty("--accent-ink", luminance > 0.6 ? "#171717" : "#FFFFFF");
+}
+
 function Shell({ children }: { children: ReactNode }) {
   return (
     <>
@@ -50,6 +70,10 @@ export default function App() {
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     document.body.dir = lang === "ar" ? "rtl" : "ltr";
   }, [lang]);
+
+  useEffect(() => {
+    applyPortalAccentColor(settings?.customerPortalTheme?.accentColor);
+  }, [settings?.customerPortalTheme?.accentColor]);
 
   if (bootstrapError) {
     return <ConfigErrorScreen message={displayError(bootstrapError, tr)} />;

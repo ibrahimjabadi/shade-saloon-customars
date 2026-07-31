@@ -109,6 +109,31 @@ function StaffPanel({ staff, onOpen }: { staff: Barber[]; onOpen: (id: string) =
   );
 }
 
+const SOCIAL_LABELS: Record<string, string> = {
+  instagram: "Instagram",
+  whatsapp: "WhatsApp",
+  facebook: "Facebook",
+  tiktok: "TikTok",
+};
+
+function SocialLinks({ social }: { social?: import("../../api/types").CustomerPortalTheme["social"] }) {
+  const { tr } = useTranslation();
+  const entries = Object.entries(social || {}).filter(([, url]) => url);
+  if (!entries.length) return null;
+  return (
+    <>
+      <h3>{tr("followUs")}</h3>
+      <div className="contact-actions">
+        {entries.map(([key, url]) => (
+          <a key={key} className="btn secondary" href={url} target="_blank" rel="noopener">
+            {SOCIAL_LABELS[key] || key}
+          </a>
+        ))}
+      </div>
+    </>
+  );
+}
+
 function InfoPanel({
   description,
   hasHours,
@@ -118,6 +143,7 @@ function InfoPanel({
   amenities,
   phone,
   mapsUrl,
+  social,
 }: {
   description?: string;
   hasHours: boolean;
@@ -127,9 +153,11 @@ function InfoPanel({
   amenities?: string[];
   phone?: string;
   mapsUrl?: string;
+  social?: import("../../api/types").CustomerPortalTheme["social"];
 }) {
   const { tr, lang } = useTranslation();
-  const nothing = !description && !hasHours && !hasAmenities && !phone && !mapsUrl;
+  const hasSocial = Object.values(social || {}).some(Boolean);
+  const nothing = !description && !hasHours && !hasAmenities && !phone && !mapsUrl && !hasSocial;
   return (
     <>
       {description && (
@@ -162,6 +190,7 @@ function InfoPanel({
           </a>
         )}
       </div>
+      <SocialLinks social={social} />
       {nothing && <p className="muted">{tr("noPhotos")}</p>}
     </>
   );
@@ -176,6 +205,7 @@ export function HomeView() {
   const homeTab = useAppStore((s) => s.homeTab);
   const setHomeTab = useAppStore((s) => s.setHomeTab);
   const openBooking = useAppStore((s) => s.openBooking);
+  const portalTheme = useAppStore((s) => s.settings?.customerPortalTheme);
   const [staffLightboxId, setStaffLightboxId] = useState<string | null>(null);
 
   const branch = branches.find((b) => b.id === branchId);
@@ -187,12 +217,18 @@ export function HomeView() {
   const staff = branchBarbers(barbers, branch.id);
   const servicesForBranch = branchServices(services, barbers, branch.id);
 
-  const tabs: { id: HomeTab; label: string }[] = [
-    { id: "services", label: tr("services") },
-    { id: "photos", label: tr("photos") },
-    { id: "staff", label: tr("staff") },
-    { id: "info", label: tr("info") },
+  // Section visibility is admin-configurable (Settings > Customer portal);
+  // undefined/missing means "on" (a fresh install with no config touched
+  // shows everything, same as before this feature existed).
+  const allTabs: { id: HomeTab; label: string; show: boolean }[] = [
+    { id: "services" as HomeTab, label: tr("services"), show: portalTheme?.showServicesTab !== false },
+    { id: "photos" as HomeTab, label: tr("photos"), show: portalTheme?.showPhotosTab !== false },
+    { id: "staff" as HomeTab, label: tr("staff"), show: portalTheme?.showStaffTab !== false },
+    { id: "info" as HomeTab, label: tr("info"), show: portalTheme?.showInfoTab !== false },
   ];
+  const tabs = allTabs.filter((t) => t.show);
+  const activeTab = tabs.some((t) => t.id === homeTab) ? homeTab : tabs[0]?.id;
+  const bookNowLabel = (lang === "ar" ? portalTheme?.ctaLabelAr : portalTheme?.ctaLabelEn) || tr("bookNow");
 
   return (
     <>
@@ -212,7 +248,7 @@ export function HomeView() {
         {hasHours && <OpenStatusBadge hours={branch.businessHours} timezone={branch.timezone} />}
         <div className="home-hero-actions">
           <button className="btn gold" onClick={() => openBooking()}>
-            {tr("bookNow")}
+            {bookNowLabel}
           </button>
           {branch.phone && (
             <a className="btn secondary" href={`tel:${branch.phone}`}>
@@ -226,7 +262,7 @@ export function HomeView() {
         {tabs.map((t) => (
           <button
             key={t.id}
-            className={`home-tab ${t.id === homeTab ? "active" : ""}`}
+            className={`home-tab ${t.id === activeTab ? "active" : ""}`}
             onClick={() => setHomeTab(t.id)}
           >
             {t.label}
@@ -235,10 +271,10 @@ export function HomeView() {
       </div>
 
       <div>
-        {homeTab === "services" && <ServicesPanel services={servicesForBranch} />}
-        {homeTab === "photos" && <PhotosPanel photos={branch.galleryPhotos} />}
-        {homeTab === "staff" && <StaffPanel staff={staff} onOpen={setStaffLightboxId} />}
-        {homeTab === "info" && (
+        {activeTab === "services" && <ServicesPanel services={servicesForBranch} />}
+        {activeTab === "photos" && <PhotosPanel photos={branch.galleryPhotos} />}
+        {activeTab === "staff" && <StaffPanel staff={staff} onOpen={setStaffLightboxId} />}
+        {activeTab === "info" && (
           <InfoPanel
             description={desc}
             hasHours={hasHours}
@@ -248,6 +284,7 @@ export function HomeView() {
             amenities={branch.amenities}
             phone={branch.phone}
             mapsUrl={branch.googleMapsUrl}
+            social={portalTheme?.social}
           />
         )}
       </div>
