@@ -19,7 +19,9 @@ function isLiveDataRequest(url) {
 // on every deploy to bust stale entries — correctness now comes from the
 // hash itself, not from remembering to edit this file.
 function isHashedBuildAsset(url) {
-  return url.origin === self.location.origin && url.pathname.startsWith('/app-build/');
+  // includes(), not startsWith() — this app-build/ can sit at the domain
+  // root ("/app-build/...") or under a mount prefix ("/customer-app/app-build/...").
+  return url.origin === self.location.origin && url.pathname.includes('/app-build/');
 }
 
 self.addEventListener('install', () => {

@@ -190,8 +190,11 @@ export const useAppStore = create<AppState>()((set, get) => ({
           (b) => b.active !== false && b.employeeStatus !== "frozen" && b.employeeStatus !== "suspended"
         ),
       };
-      // Legacy deep link support: /branch/xyz still preselects that branch.
-      const m = window.location.pathname.match(/^\/branch\/([^/]+)/);
+      // Legacy deep link support: a URL ending in /branch/xyz still
+      // preselects that branch — no leading-anchor so this matches whether
+      // the app is mounted at the domain root ("/branch/xyz") or under a
+      // path prefix ("/customer-app/branch/xyz").
+      const m = window.location.pathname.match(/\/branch\/([^/]+)/);
       let branchId = m ? decodeURIComponent(m[1]) : get().branchId;
       if (!branchId || !branches.some((b) => b.id === branchId)) branchId = branches[0]?.id || "";
       patch.branchId = branchId;
