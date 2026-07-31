@@ -7,7 +7,9 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "start": "node server.js",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "electron:dev": "electron desktop-main.js",
+    "electron:build": "npm run build && electron-builder --win"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -22,6 +24,8 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
+    "electron": "^32.3.3",
+    "electron-builder": "^25.1.8",
     "typescript": "^5.6.3",
     "vite": "^5.4.10"
   },
@@ -29,5 +33,29 @@
   "engines": {
     "node": ">=18"
   },
-  "private": true
+  "private": true,
+  "build": {
+    "appId": "com.shadisaloon.customerdesktop",
+    "productName": "Shadi Saloon - Customer",
+    "directories": {
+      "output": "dist-desktop"
+    },
+    "files": [
+      "desktop-main.js",
+      "server.js",
+      "dist/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "desktop-main.js"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "public/assets/icon-512.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
 }
