@@ -1,6 +1,7 @@
 import { useAppStore } from "../../../store/appStore";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { resolveMediaUrl } from "../../../utils/media";
+import { avatarColorFor } from "../../../utils/avatarColor";
 import type { HomeVisitWizard } from "../useHomeVisitWizard";
 
 export function HVBarberStep({ wizard }: { wizard: HomeVisitWizard }) {
@@ -18,7 +19,14 @@ export function HVBarberStep({ wizard }: { wizard: HomeVisitWizard }) {
             className={`item barber-card ${wizard.state.barberId === b.id ? "selected" : ""}`}
             onClick={() => wizard.setBarber(b.id)}
           >
-            <div className="barber-avatar" style={b.photoUrl ? { backgroundImage: `url('${resolveMediaUrl(b.photoUrl)}')` } : undefined}>
+            <div
+              className="barber-avatar"
+              style={
+                b.photoUrl
+                  ? { backgroundImage: `url('${resolveMediaUrl(b.photoUrl)}')` }
+                  : { backgroundColor: avatarColorFor(b.id), color: "#fff" }
+              }
+            >
               {b.photoUrl ? "" : (b.name || "?").trim()[0] || "?"}
             </div>
             <div>

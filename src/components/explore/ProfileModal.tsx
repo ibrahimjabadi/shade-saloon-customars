@@ -5,6 +5,7 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { favoriteKey, type ProfileType } from "../../utils/explorePosts";
 import type { GalleryPhoto } from "../../api/types";
 import { resolveMediaUrl } from "../../utils/media";
+import { avatarColorFor } from "../../utils/avatarColor";
 
 function useOwner(type: ProfileType, id: string) {
   const branches = useAppStore((s) => s.branches);
@@ -76,7 +77,14 @@ export function ProfileModal({ type, id, onClose }: { type: ProfileType; id: str
         </div>
 
         <div className="profile-header">
-          <div className="profile-avatar" style={owner.avatarUrl ? { backgroundImage: `url('${owner.avatarUrl}')` } : undefined}>
+          <div
+            className="profile-avatar"
+            style={
+              owner.avatarUrl
+                ? { backgroundImage: `url('${owner.avatarUrl}')` }
+                : { backgroundColor: avatarColorFor(id), color: "#fff" }
+            }
+          >
             {owner.avatarUrl ? "" : owner.name.trim()[0] || "?"}
           </div>
           <strong style={{ fontSize: 17 }}>{owner.name}</strong>

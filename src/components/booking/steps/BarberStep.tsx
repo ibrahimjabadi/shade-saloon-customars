@@ -1,5 +1,6 @@
 import { useAppStore } from "../../../store/appStore";
 import { resolveMediaUrl } from "../../../utils/media";
+import { avatarColorFor } from "../../../utils/avatarColor";
 
 export function BarberStep() {
   const branchId = useAppStore((s) => s.branchId);
@@ -15,7 +16,14 @@ export function BarberStep() {
           className={`item barber-card ${barberId === b.id ? "selected" : ""}`}
           onClick={() => setBkBarber(b.id)}
         >
-          <div className="barber-avatar" style={b.photoUrl ? { backgroundImage: `url('${resolveMediaUrl(b.photoUrl)}')` } : undefined}>
+          <div
+            className="barber-avatar"
+            style={
+              b.photoUrl
+                ? { backgroundImage: `url('${resolveMediaUrl(b.photoUrl)}')` }
+                : { backgroundColor: avatarColorFor(b.id), color: "#fff" }
+            }
+          >
             {b.photoUrl ? "" : (b.name || "?").trim()[0] || "?"}
           </div>
           <div>

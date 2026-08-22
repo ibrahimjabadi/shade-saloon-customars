@@ -9,6 +9,7 @@ import { useState } from "react";
 import type { Barber, Service } from "../../api/types";
 import { branchBarbers, branchServices } from "../../utils/branchCatalog";
 import { resolveMediaUrl } from "../../utils/media";
+import { avatarColorFor } from "../../utils/avatarColor";
 
 function BranchSwitcher() {
   const branches = useAppStore((s) => s.branches);
@@ -97,7 +98,11 @@ function StaffPanel({ staff, onOpen }: { staff: Barber[]; onOpen: (id: string) =
         <div className="staff-card" key={s.id} onClick={() => onOpen(s.id)}>
           <div
             className="staff-photo"
-            style={s.photoUrl ? { backgroundImage: `url('${resolveMediaUrl(s.photoUrl)}')` } : undefined}
+            style={
+              s.photoUrl
+                ? { backgroundImage: `url('${resolveMediaUrl(s.photoUrl)}')` }
+                : { backgroundColor: avatarColorFor(s.id), color: "#fff" }
+            }
           >
             {s.photoUrl ? "" : (s.name || "?").trim()[0] || "?"}
           </div>
