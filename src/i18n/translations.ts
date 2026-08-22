@@ -7,6 +7,11 @@
 
 const ar = {
   home: "الرئيسية", myBookings: "حجوزاتي", profile: "حسابي",
+  bookTab: "حجز", branchesTab: "الفروع", pointsTab: "النقاط",
+  pointsComingSoonTitle: "نظام النقاط قريبًا", pointsComingSoonBody: "رح تقدر تجمع نقاط من كل زيارة وتستبدلها بمكافآت — الميزة هسا قيد التطوير.",
+  greeting: "أهلاً بك،", nextAppointmentLabel: "موعدك القادم",
+  statTotalBookings: "الحجوزات", statCompleted: "مكتملة", statUpcoming: "قادمة",
+  switchToBranch: "التبديل لهذا الفرع",
   homeVisitTab: "منزلي", homeVisitTitle: "الحجز المنزلي",
   homeVisitComingSoon: "قريبًا", homeVisitComingSoonHint: "رح نضيف تفاصيل حجز زيارة الحلاق لمنزلك قريبًا.",
   address: "العنوان", setLocationFirst: "حدد موقعك أول شي من الخطوة السابقة",
@@ -65,6 +70,11 @@ const ar = {
 
 const en: Record<keyof typeof ar, string> = {
   home: "Home", myBookings: "My Bookings", profile: "Profile",
+  bookTab: "Book", branchesTab: "Branches", pointsTab: "Points",
+  pointsComingSoonTitle: "Loyalty points, coming soon", pointsComingSoonBody: "You'll be able to earn points on every visit and redeem them for rewards — this feature is in development.",
+  greeting: "Welcome back,", nextAppointmentLabel: "Your next appointment",
+  statTotalBookings: "Bookings", statCompleted: "Completed", statUpcoming: "Upcoming",
+  switchToBranch: "Switch to this branch",
   homeVisitTab: "Home visit", homeVisitTitle: "Home Visit Booking",
   homeVisitComingSoon: "Coming soon", homeVisitComingSoonHint: "Booking a barber to visit your home will be available here soon.",
   address: "Address", setLocationFirst: "Set your location in the previous step first",

@@ -11,6 +11,7 @@ import { AccountStep } from "./steps/AccountStep";
 import { ConfirmStep } from "./steps/ConfirmStep";
 import { SuccessScreen } from "./SuccessScreen";
 import { YearCalendarModal } from "./YearCalendarModal";
+import { StepIndicator } from "./StepIndicator";
 
 export function BookingOverlay() {
   const { tr, lang } = useTranslation();
@@ -56,7 +57,6 @@ export function BookingOverlay() {
     4: tr("details"),
   };
   const stepsList = account ? [0, 1, 2, 4] : [0, 1, 2, 3, 4];
-  const pos = stepsList.indexOf(booking.step);
   const selected = resolveSelectedServices(services, booking.selectedServices);
 
   return (
@@ -67,11 +67,7 @@ export function BookingOverlay() {
           ×
         </button>
       </div>
-      <div className="booking-progress">
-        {stepsList.map((_, i) => (
-          <div key={i} className={`booking-progress-dot ${i < pos ? "done" : ""} ${i === pos ? "active" : ""}`} />
-        ))}
-      </div>
+      <StepIndicator steps={stepsList} current={booking.step} labels={stepsList.map((s) => titles[s])} />
       <div className="booking-body">
         {booking.step === 0 && <ServicesStep />}
         {booking.step === 1 && <BarberStep />}

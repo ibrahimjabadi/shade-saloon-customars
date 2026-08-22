@@ -3,6 +3,7 @@ import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { resolveErrorMessage } from "../../api/client";
 import type { VerifyChannel } from "../../api/types";
+import { OtpInput } from "./OtpInput";
 
 /** Shown on the logged-in Profile view for whichever contact channel(s)
  * aren't verified yet. Verification is informational, not a gate — this
@@ -70,13 +71,7 @@ export function VerifyAccountBanner() {
       {activeChannel && (
         <div className="verify-account-confirm">
           <span className="muted">{tr("verificationCodeSentHint")}</span>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder={tr("verificationCodePlaceholder")}
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
+          <OtpInput value={code} onChange={setCode} disabled={busy} />
           <button className="btn small gold" disabled={busy || !code.trim()} onClick={() => void handleConfirm()}>
             {tr("confirmCode")}
           </button>

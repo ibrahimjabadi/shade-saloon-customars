@@ -5,11 +5,50 @@ import { formatMoney } from "../../utils/money";
 import { OpenStatusBadge, HoursTable } from "./BusinessHours";
 import { AmenitiesGrid } from "./amenities";
 import { StaffLightbox } from "./StaffLightbox";
-import { useState } from "react";
-import type { Barber, Service } from "../../api/types";
+import { useEffect, useState } from "react";
+import type { Barber, Booking, Service } from "../../api/types";
 import { branchBarbers, branchServices } from "../../utils/branchCatalog";
 import { resolveMediaUrl } from "../../utils/media";
 import { avatarColorFor } from "../../utils/avatarColor";
+
+function nextUpcomingBooking(bookings: Booking[] | null, now: number): Booking | null {
+  if (!bookings) return null;
+  const upcoming = bookings.filter((b) => {
+    const status = b.status || (new Date(b.start).getTime() < now ? "completed" : "upcoming");
+    return status === "upcoming" && new Date(b.start).getTime() > now;
+  });
+  upcoming.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+  return upcoming[0] || null;
+}
+
+function NextAppointmentCard({ booking }: { booking: Booking }) {
+  const { tr, lang } = useTranslation();
+  const cancelBooking = useAppStore((s) => s.cancelBooking);
+  const openReschedule = useAppStore((s) => s.openReschedule);
+  const svcNames = (booking.services || []).map((s) => s.nameAr || s.name).join("، ");
+  const dateLabel = booking.startLabel || new Date(booking.start).toLocaleString(lang);
+  return (
+    <div className="card-accent" style={{ marginBottom: 14 }}>
+      <div className="card-accent-decor-1" aria-hidden="true" />
+      <div className="card-accent-decor-2" aria-hidden="true" />
+      <div className="card-accent-label">{tr("nextAppointmentLabel")}</div>
+      <div className="card-accent-title">{svcNames || tr("services")}</div>
+      <div className="card-accent-meta">
+        <span>{dateLabel}</span>
+        {booking.barber?.name && <span>{booking.barber.name}</span>}
+      </div>
+      {booking.branch?.name && <div className="card-accent-sub">{booking.branch.name}</div>}
+      <div className="card-accent-actions">
+        <button className="btn secondary card-accent-edit" onClick={() => openReschedule(booking.id)}>
+          {tr("rescheduleBooking")}
+        </button>
+        <button className="btn danger" style={{ width: "auto" }} onClick={() => void cancelBooking(booking.id)}>
+          {tr("cancelBooking")}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function BranchSwitcher() {
   const branches = useAppStore((s) => s.branches);
@@ -210,11 +249,24 @@ export function HomeView() {
   const homeTab = useAppStore((s) => s.homeTab);
   const setHomeTab = useAppStore((s) => s.setHomeTab);
   const openBooking = useAppStore((s) => s.openBooking);
+  const openHomeVisit = useAppStore((s) => s.openHomeVisit);
   const portalTheme = useAppStore((s) => s.settings?.customerPortalTheme);
+  const account = useAppStore((s) => s.account);
+  const myBookings = useAppStore((s) => s.myBookings);
+  const loadMyBookings = useAppStore((s) => s.loadMyBookings);
   const [staffLightboxId, setStaffLightboxId] = useState<string | null>(null);
+
+  // My Bookings is no longer its own bottom tab, so Home is now the place
+  // that needs the list loaded (for the Next Appointment card below) —
+  // mirrors the same "only if not already loaded" guard BookingsView used.
+  useEffect(() => {
+    if (account && myBookings === null) void loadMyBookings();
+  }, [account, myBookings, loadMyBookings]);
 
   const branch = branches.find((b) => b.id === branchId);
   if (!branch) return <div className="empty-state">{tr("notFound")}</div>;
+
+  const upcoming = account ? nextUpcomingBooking(myBookings, Date.now()) : null;
 
   const desc = lang === "ar" ? branch.descriptionAr || branch.description : branch.description;
   const hasHours = !!branch.businessHours && typeof branch.businessHours === "object";
@@ -237,6 +289,13 @@ export function HomeView() {
 
   return (
     <>
+      {account?.name && (
+        <div className="home-greeting">
+          <div className="section-label">{tr("greeting")}</div>
+          <h1>{account.name}</h1>
+        </div>
+      )}
+      {upcoming && <NextAppointmentCard booking={upcoming} />}
       <BranchSwitcher />
       <div
         className={`home-hero${branch.galleryPhotos?.[0] ? " has-photo" : ""}`}
@@ -254,6 +313,9 @@ export function HomeView() {
         <div className="home-hero-actions">
           <button className="btn gold" onClick={() => openBooking()}>
             {bookNowLabel}
+          </button>
+          <button className="btn secondary" onClick={openHomeVisit}>
+            {tr("homeVisitTab")}
           </button>
           {branch.phone && (
             <a className="btn secondary" href={`tel:${branch.phone}`}>

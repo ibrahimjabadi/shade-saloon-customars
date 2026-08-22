@@ -16,18 +16,27 @@ export function ConfirmStep() {
   const selected = resolveSelectedServices(services, booking.selectedServices);
 
   return (
-    <div className="card">
-      <div style={{ marginBottom: 8 }}>
-        <strong>{branch?.name || "-"}</strong>
+    <div className="booking-summary">
+      <div className="booking-summary-row">
+        <span className="booking-summary-label">{tr("changeBranch")}</span>
+        <span className="booking-summary-value">{branch?.name || "-"}</span>
       </div>
-      <div className="muted">{selected.map((s) => serviceName(s, lang)).join(", ") || "-"}</div>
-      <div className="muted" style={{ marginTop: 6 }}>
-        {tr("barber")}: <strong>{barber?.name || "-"}</strong>
+      <div className="booking-summary-row">
+        <span className="booking-summary-label">{tr("services")}</span>
+        <span className="booking-summary-value">{selected.map((s) => serviceName(s, lang)).join(", ") || "-"}</span>
       </div>
-      <div className="muted" style={{ marginTop: 6 }}>
-        {tr("time")}: <strong>{booking.slot ? booking.slot.label : "-"}</strong>
+      <div className="booking-summary-row">
+        <span className="booking-summary-label">{tr("barber")}</span>
+        <span className="booking-summary-value">{barber?.name || "-"}</span>
       </div>
-      <h2 style={{ marginTop: 10 }}>{formatMoney(totalPrice(selected), currency, lang)}</h2>
+      <div className="booking-summary-row">
+        <span className="booking-summary-label">{tr("time")}</span>
+        <span className="booking-summary-value">{booking.slot ? booking.slot.label : "-"}</span>
+      </div>
+      <div className="booking-summary-row booking-summary-total">
+        <span className="booking-summary-label">{tr("total")}</span>
+        <span className="booking-summary-value">{formatMoney(totalPrice(selected), currency, lang)}</span>
+      </div>
       {booking.error && (
         <div className="muted" style={{ marginTop: 10 }}>
           {displayError(booking.error, tr)}

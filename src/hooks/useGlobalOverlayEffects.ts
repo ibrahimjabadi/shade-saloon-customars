@@ -15,6 +15,7 @@ export function useGlobalOverlayEffects() {
   const setOffline = useAppStore((s) => s.setOffline);
   const closeReschedule = useAppStore((s) => s.closeReschedule);
   const closeYearCalendar = useAppStore((s) => s.closeYearCalendar);
+  const closeHomeVisit = useAppStore((s) => s.closeHomeVisit);
   const requestCloseBooking = useRequestCloseBooking();
 
   useEffect(() => {
@@ -30,13 +31,17 @@ export function useGlobalOverlayEffects() {
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      const { yearCalendarOpen, booking, reschedule } = useAppStore.getState();
+      const { yearCalendarOpen, booking, reschedule, homeVisitOpen } = useAppStore.getState();
       if (e.key === "Tab") {
         if (yearCalendarOpen) {
           trapTabKey(e, ".year-modal");
           return;
         }
         if (booking || reschedule) {
+          trapTabKey(e, ".booking-overlay");
+          return;
+        }
+        if (homeVisitOpen) {
           trapTabKey(e, ".booking-overlay");
           return;
         }
@@ -51,9 +56,13 @@ export function useGlobalOverlayEffects() {
         closeReschedule();
         return;
       }
-      if (booking) requestCloseBooking();
+      if (booking) {
+        requestCloseBooking();
+        return;
+      }
+      if (homeVisitOpen) closeHomeVisit();
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [closeReschedule, closeYearCalendar, requestCloseBooking]);
+  }, [closeReschedule, closeYearCalendar, closeHomeVisit, requestCloseBooking]);
 }

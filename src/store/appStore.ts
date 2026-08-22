@@ -17,7 +17,12 @@ import type {
 import type { Lang } from "../i18n/translations";
 import { nextDays } from "../utils/businessHours";
 
-export type Tab = "home" | "bookings" | "homeVisit" | "explore" | "profile";
+// "homeVisit" used to be its own tab; it's now the `homeVisitOpen` overlay
+// flag below, reached via a CTA on Home instead of a bottom-tab slot.
+// "bookings" and "explore" are no longer bottom-tab destinations either —
+// both screens still render exactly as before, just reached via rows in
+// Profile's settings list (see ProfileView.tsx) instead of TabBar buttons.
+export type Tab = "home" | "bookings" | "explore" | "branches" | "points" | "profile";
 export type HomeTab = "services" | "photos" | "staff" | "info";
 
 export interface BookingWizardState {
@@ -117,6 +122,12 @@ interface AppState {
   setRescheduleDate: (date: string) => void;
   setRescheduleSlot: (slot: Slot | null) => void;
   confirmReschedule: () => Promise<void>;
+
+  // ---- home visit (full-screen overlay wrapping HomeVisitWizard, reached
+  // from a CTA on Home rather than its own bottom tab) ----
+  homeVisitOpen: boolean;
+  openHomeVisit: () => void;
+  closeHomeVisit: () => void;
 }
 
 function errorMessage(err: unknown, fallbackKey: "errNetwork" | "errGeneric" = "errGeneric"): string {
@@ -386,4 +397,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
       set((s) => (s.reschedule ? { reschedule: { ...s.reschedule, submitting: false, error: errorMessage(err) } } : s));
     }
   },
+
+  homeVisitOpen: false,
+  openHomeVisit: () => set({ homeVisitOpen: true }),
+  closeHomeVisit: () => set({ homeVisitOpen: false }),
 }));
