@@ -17,6 +17,19 @@ const PORT = process.env.PORT || 3001;
 // add stand-alone files under public/ unless they're meant to ship in dist/
 // as-is (Vite copies public/ verbatim) — there is no routing indirection to
 // rely on to keep something unreachable.
+//
+// NOTE — this app is ALSO merged into the main SHADI SALOON backend repo,
+// served there under /customer-app/ on that repo's paid/always-on Render
+// service instead of this one's free (sleeps-when-idle) service. This
+// server.js is what THAT free standalone service runs; it's independent of
+// the merged copy. To refresh the merged copy after a change here: in the
+// backend repo, `VITE_BASE_PATH=/customer-app/ npm run build -- --outDir
+// dist-merged` (run from this repo), fix dist-merged/config.js
+// (SHADI_API_BASE = "") and dist-merged/manifest.json (start_url + every
+// icon src prefixed with /customer-app/), then copy dist-merged/* over the
+// backend repo's public/customer-app/ and commit there — see the matching
+// comment in that repo's server.js (near its /customer-app/* routes) for
+// the receiving end of this process.
 const DIST_DIR = path.join(__dirname, "dist");
 
 app.use((req,res,next)=>{
