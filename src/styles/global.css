@@ -1,48 +1,55 @@
 /* ===================== SHADI SALOON — global styles =====================
-   Dark theme (2026-08-21, refined 2026-08-22 against a more detailed spec):
-   near-black page background, dark surfaces, white/off-white text, white
-   accent (no gold/yellow, ever — a repeated, deliberate decision).
-   --accent/--accent-soft are also the runtime override target: the admin
-   can set a custom customerPortalTheme.accentColor in Settings, applied
-   via document.documentElement.style.setProperty at boot (see App.tsx) —
-   these :root values are just the default when no override is set. */
+   Light theme (2026-08-26, replacing the earlier dark theme against the
+   new Figma-drafted design system): white page background, off-white
+   surfaces, near-black text, near-black accent (no gold/yellow, ever — a
+   repeated, deliberate decision, now flipped from "white accent on black"
+   to "black accent on white").
+   --accent/--accent-soft/--accent-ink are also the runtime override target:
+   the admin can set a custom customerPortalTheme.accentColor in Settings,
+   applied via document.documentElement.style.setProperty at boot (see
+   App.tsx) — these :root values are just the default when no override is
+   set. That override logic (including the light/dark ink flip based on the
+   chosen color's luminance) is unchanged by this theme swap. */
 :root{
-  --bg:#0C0C0C;--surface:#161616;--surface-elevated:#202020;--surface-pressed:#252525;
-  --text:#F5F5F5;--muted:#8A8A8A;--faint:#505050;--text-disabled:#303030;
-  --line:#202020;--line-strong:#2A2A2A;--border-subtle:#1E1E1E;
-  --accent:#FFFFFF;--accent-ink:#0C0C0C;--accent-soft:rgba(255,255,255,.10);
-  --white-dim:rgba(255,255,255,.08);--white-subtle:rgba(255,255,255,.04);
-  --success:#4ADE80;--warning:#FBBF24;--danger:#F87171;
-  --success-bg:rgba(74,222,128,.08);--warning-bg:rgba(251,191,36,.08);--danger-bg:rgba(248,113,113,.08);
-  --radius:16px;--radius-sm:12px;--shadow-md:0 2px 10px rgba(0,0,0,.35);--shadow-gold:0 6px 16px rgba(255,255,255,.16);
+  --bg:#FFFFFF;--surface:#F8F8F6;--surface-elevated:#F1F1EE;--surface-pressed:#E8E8E5;
+  --text:#111111;--muted:#5C5C5A;--faint:#9A9A96;--text-disabled:#C5C5C0;
+  --line:#EDEDE9;--line-strong:#E4E4E0;--border-subtle:#F1F1EE;
+  --accent:#111111;--accent-ink:#FFFFFF;--accent-soft:rgba(17,17,17,.08);
+  /* Named for the dark-theme overlay wash they used to be — still the two
+     hover/active "wash" tokens for .btn.secondary, just re-tinted dark now
+     that they sit on light surfaces instead of light-on-dark. */
+  --white-dim:rgba(17,17,17,.06);--white-subtle:rgba(17,17,17,.035);
+  --success:#16A34A;--warning:#D97706;--danger:#DC2626;
+  --success-bg:rgba(22,163,74,.10);--warning-bg:rgba(217,119,6,.10);--danger-bg:rgba(220,38,38,.08);
+  --radius:16px;--radius-sm:12px;--shadow-md:0 2px 10px rgba(17,17,17,.08);--shadow-gold:0 6px 16px rgba(17,17,17,.18);
   --font-ui:"Cairo","Segoe UI",Tahoma,Arial,sans-serif;--font-numeric:"Manrope","Cairo","Segoe UI",Tahoma,Arial,sans-serif;--tabbar-h:64px;--topbar-h:56px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit}
 a{color:inherit}
-*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent}
+*{scrollbar-width:thin;scrollbar-color:rgba(17,17,17,.22) transparent}
 *::-webkit-scrollbar{width:9px;height:9px}
-*::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:99px}
+*::-webkit-scrollbar-thumb{background:rgba(17,17,17,.2);border-radius:99px}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
 /* ---- App shell ---- */
-/* Body paints #080808 outside the 420px app container on wide viewports
-   (spec section 15); the container itself keeps the radial accent glow and
-   a hairline border once it's no longer edge-to-edge. */
-body{background:#080808}
-#root{min-height:100vh;display:flex;flex-direction:column;max-width:420px;margin:0 auto;background:radial-gradient(circle at top left,rgba(255,255,255,.05),transparent 45%),var(--bg);position:relative}
-@media(min-width:421px){#root{border-inline:1px solid var(--line)}}
+/* Body paints a hair-off-white outside the 420px app container on wide
+   viewports so the container's hairline border (below) actually reads
+   against it — pure white-on-white would hide it entirely. */
+body{background:#F1F1EE}
+#root{min-height:100vh;display:flex;flex-direction:column;max-width:420px;margin:0 auto;background:var(--bg);position:relative}
+@media(min-width:421px){#root{border-inline:1px solid var(--line-strong)}}
 .app-topbar{
   position:sticky;top:0;z-index:30;height:var(--topbar-h);flex:none;
   display:flex;align-items:center;justify-content:space-between;padding:0 20px;
-  background:rgba(22,22,22,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line-strong);
+  background:rgba(255,255,255,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line-strong);
   padding-top:env(safe-area-inset-top);
 }
 .app-topbar-brand{display:flex;align-items:center;gap:8px}
 .app-topbar-actions{display:flex;align-items:center;gap:8px}
-.app-logo{height:26px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+.app-logo{height:26px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(17,17,17,.12))}
 .app-lang-btn{border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:999px;padding:7px 13px;font-weight:700;font-size:12.5px;cursor:pointer}
 /* No unread-count dot — this app has no notifications backend to back one. */
 .app-bell-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--faint)}
@@ -74,18 +81,18 @@ body{background:#080808}
 
 /* ---- Shared cards / inputs (reused across tabs) ---- */
 .card{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius);padding:16px;transition:border-color .18s ease-out,background .18s ease-out}
-@media(hover:hover){.card:hover{border-color:#383838;background:#181818}}
+@media(hover:hover){.card:hover{border-color:#D0D0CC;background:#FBFBFA}}
 .grid{display:grid;gap:12px}
 .btn{border:0;border-radius:14px;padding:0 24px;background:var(--surface);color:var(--text);font-weight:700;font-size:15px;cursor:pointer;width:100%;height:52px;font-family:var(--font-ui);border:1px solid var(--line-strong);transition:transform .08s ease-in,background .15s ease}
 .btn:active{transform:scale(.97)}
 .btn:disabled{opacity:1;background:var(--surface-elevated);color:var(--text-disabled);border-color:var(--line-strong);cursor:not-allowed;transform:none}
 .btn.gold{background:var(--accent);color:var(--accent-ink);border-color:transparent;box-shadow:var(--shadow-gold)}
-@media(hover:hover){.btn.gold:hover{background:#E8E8E8}}
-.btn.gold:active{background:#D0D0D0}
+@media(hover:hover){.btn.gold:hover{background:#2A2A2A}}
+.btn.gold:active{background:#000000}
 .btn.secondary{height:44px;border-radius:12px;font-size:14px;background:transparent;border:1px solid var(--line-strong);color:var(--text)}
 @media(hover:hover){.btn.secondary:hover{border-color:var(--faint);background:var(--white-subtle)}}
 .btn.secondary:active{background:var(--white-dim)}
-.btn.danger{height:44px;border-radius:12px;font-size:14px;background:transparent;border:1px solid rgba(248,113,113,.25);color:var(--danger)}
+.btn.danger{height:44px;border-radius:12px;font-size:14px;background:transparent;border:1px solid rgba(220,38,38,.25);color:var(--danger)}
 @media(hover:hover){.btn.danger:hover{background:var(--danger-bg)}}
 .btn.ghost{background:transparent;border:none;color:var(--muted);font-size:14px;font-weight:500;height:auto;padding:8px 4px;width:auto}
 @media(hover:hover){.btn.ghost:hover{color:var(--text)}}
@@ -94,7 +101,7 @@ label{display:grid;gap:8px;color:var(--muted);font-size:13px}
 input,textarea,select{width:100%;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);padding:0 14px;min-height:48px;transition:border-color .15s ease,box-shadow .15s ease;font-family:inherit}
 textarea{padding:14px}
 input::placeholder,textarea::placeholder{color:var(--faint)}
-input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,255,255,.07)}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(17,17,17,.08)}
 input:invalid{border-color:var(--danger)}
 /* Phone field: country dial-code select + local number input, side by
    side, so a number isn't forced into Jordan's local format. */
@@ -110,18 +117,22 @@ input:invalid{border-color:var(--danger)}
 /* ---- OTP segmented input ---- */
 .otp-input{display:flex;gap:8px;justify-content:center}
 .otp-cell{width:44px;min-width:44px;height:52px;min-height:52px;text-align:center;padding:0;font-family:var(--font-numeric);font-size:20px;font-weight:700;border-radius:12px}
-.otp-cell:focus{border-color:var(--accent);background:#1A1A1A;box-shadow:0 0 0 3px rgba(255,255,255,.07)}
+.otp-cell:focus{border-color:var(--accent);background:var(--surface-elevated);box-shadow:0 0 0 3px rgba(17,17,17,.08)}
 
-/* ---- White accent card (Next Appointment, User Card, ...) ---- */
-.card-accent{position:relative;overflow:hidden;background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:20px;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
-.card-accent-decor-1{position:absolute;width:80px;height:80px;border-radius:50%;background:rgba(0,0,0,.04);bottom:-16px;inset-inline-end:-16px}
-.card-accent-decor-2{position:absolute;width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,.03);top:-12px;inset-inline-end:24px}
-.card-accent-label{position:relative;font-size:11px;color:rgba(0,0,0,.4);font-weight:700}
+/* ---- Black accent card (Next Appointment, User Card, ...) ---- */
+/* Everything inside is drawn in white-based rgba now (accent flipped from
+   white to black), including the decorative circles and secondary text —
+   the old black-based rgba values would have been nearly invisible on a
+   black card. */
+.card-accent{position:relative;overflow:hidden;background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:20px;box-shadow:0 0 0 1px var(--line-strong)}
+.card-accent-decor-1{position:absolute;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.06);bottom:-16px;inset-inline-end:-16px}
+.card-accent-decor-2{position:absolute;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.05);top:-12px;inset-inline-end:24px}
+.card-accent-label{position:relative;font-size:11px;color:rgba(255,255,255,.55);font-weight:700}
 .card-accent-title{position:relative;font-size:20px;font-weight:700;margin-top:6px}
-.card-accent-meta{position:relative;display:flex;gap:16px;margin-top:10px;font-size:13px;color:rgba(0,0,0,.45)}
-.card-accent-sub{position:relative;font-size:11px;color:rgba(0,0,0,.3);margin-top:6px}
+.card-accent-meta{position:relative;display:flex;gap:16px;margin-top:10px;font-size:13px;color:rgba(255,255,255,.6)}
+.card-accent-sub{position:relative;font-size:11px;color:rgba(255,255,255,.45);margin-top:6px}
 .card-accent-actions{position:relative;display:flex;gap:8px;margin-top:16px}
-.card-accent-edit{border-color:rgba(0,0,0,.12)!important;color:rgba(0,0,0,.6)!important;flex:1}
+.card-accent-edit{border-color:rgba(255,255,255,.25)!important;color:rgba(255,255,255,.75)!important;flex:1}
 
 /* ---- Home: hero + status + tabs + amenities + hours (ported from branch page) ---- */
 .branch-switcher{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -132,14 +143,18 @@ input:invalid{border-color:var(--danger)}
 /* .home-hero carries a plain accent tint by default; when the branch has a
    cover photo, HomeView adds .has-photo and sets backgroundImage inline
    (photo + a dark scrim for legibility) — text flips to white only in that
-   case, since the scrim guarantees a dark backdrop regardless of theme. */
+   case, since the scrim guarantees a dark backdrop regardless of theme.
+   The same goes for the status badge over a photo: its translucent-white
+   chip and pastel green/red text are legibility choices against an
+   arbitrary photo + dark scrim, independent of the app's light/dark theme,
+   so they're intentionally left as-is here. */
 .home-hero{border-radius:var(--radius);padding:22px 18px;background:var(--accent-soft);border:1px solid var(--line-strong);background-size:cover;background-position:center;margin-bottom:6px}
 .home-hero h1{font-size:clamp(22px,5.5vw,28px);font-weight:900;letter-spacing:-.5px;line-height:1.2;margin:0 0 4px;color:var(--text)}
 .home-hero p{color:var(--muted);margin:0 0 10px}
 .home-hero.has-photo h1,.home-hero.has-photo p{color:#fff}
-.status-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:0 8px;height:22px;border-radius:999px;background:var(--success-bg);border:1px solid rgba(74,222,128,.15)}
-.status-badge.open{color:var(--success);background:var(--success-bg);border-color:rgba(74,222,128,.15)}
-.status-badge.closed{color:var(--danger);background:var(--danger-bg);border-color:rgba(248,113,113,.15)}
+.status-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:0 8px;height:22px;border-radius:999px;background:var(--success-bg);border:1px solid rgba(22,163,74,.15)}
+.status-badge.open{color:var(--success);background:var(--success-bg);border-color:rgba(22,163,74,.15)}
+.status-badge.closed{color:var(--danger);background:var(--danger-bg);border-color:rgba(220,38,38,.15)}
 .home-hero.has-photo .status-badge{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3)}
 .home-hero.has-photo .status-badge.open{color:#8CE2A0}
 .home-hero.has-photo .status-badge.closed{color:#F2A9A9}
@@ -167,7 +182,7 @@ input:invalid{border-color:var(--danger)}
 
 .hours-table{display:grid;gap:2px}
 .hours-row{display:flex;justify-content:space-between;padding:10px 14px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line-strong)}
-.hours-row.today{border-color:rgba(255,255,255,.35);background:var(--accent-soft)}
+.hours-row.today{border-color:rgba(17,17,17,.25);background:var(--accent-soft)}
 .hours-day{color:var(--muted);font-weight:600}
 .hours-row.today .hours-day{color:var(--text)}
 .hours-closed{color:var(--muted)}
@@ -185,17 +200,17 @@ input:invalid{border-color:var(--danger)}
 .booking-card .bk-actions .btn{flex:1;height:38px;font-size:13.5px}
 .booking-card .bk-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .bk-status{font-size:11px;font-weight:700;padding:0 8px;height:22px;display:inline-flex;align-items:center;border-radius:999px;white-space:nowrap;border:1px solid transparent}
-.bk-status.upcoming{background:var(--success-bg);border-color:rgba(74,222,128,.15);color:#4ADE80}
-.bk-status.completed{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.15);color:#4ADE80}
-.bk-status.cancelled{background:var(--surface-elevated);border-color:var(--line-strong);color:#888888}
-.bk-status.no_show{background:var(--danger-bg);border-color:rgba(248,113,113,.15);color:#F87171}
+.bk-status.upcoming{background:var(--success-bg);border-color:rgba(22,163,74,.15);color:var(--success)}
+.bk-status.completed{background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.15);color:var(--success)}
+.bk-status.cancelled{background:var(--surface-elevated);border-color:var(--line-strong);color:var(--muted)}
+.bk-status.no_show{background:var(--danger-bg);border-color:rgba(220,38,38,.15);color:var(--danger)}
 .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
 
 /* ---- Profile ---- */
 .profile-user-card{display:flex;align-items:center;gap:16px}
-.profile-user-avatar{position:relative;width:64px;height:64px;flex:none;border-radius:999px;background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--accent-ink)}
+.profile-user-avatar{position:relative;width:64px;height:64px;flex:none;border-radius:999px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--accent-ink)}
 .profile-user-name{position:relative;display:block;font-size:22px;font-weight:700;letter-spacing:-.3px;color:var(--accent-ink)}
-.profile-user-phone{position:relative;font-size:13px;font-family:var(--font-numeric);color:rgba(0,0,0,.38);margin-top:4px}
+.profile-user-phone{position:relative;font-size:13px;font-family:var(--font-numeric);color:rgba(255,255,255,.55);margin-top:4px}
 .profile-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
 .profile-stat-card{text-align:center;padding:12px}
 .profile-stat-value{font-family:var(--font-numeric);font-size:20px;font-weight:700;color:var(--text)}
@@ -203,7 +218,7 @@ input:invalid{border-color:var(--danger)}
 .settings-list{padding:0;overflow:hidden;margin-top:14px}
 .settings-row{display:flex;align-items:center;gap:12px;width:100%;padding:16px;background:none;border:none;border-bottom:1px solid var(--border-subtle);color:var(--text);cursor:pointer;text-align:start}
 .settings-row:last-child{border-bottom:none}
-@media(hover:hover){.settings-row:hover{background:#1C1C1C}}
+@media(hover:hover){.settings-row:hover{background:var(--surface)}}
 .settings-row-icon{width:17px;height:17px;flex:none;color:var(--faint)}
 .settings-row-icon svg{width:100%;height:100%}
 .settings-row-label{flex:1;font-size:14px}
@@ -220,9 +235,9 @@ input:invalid{border-color:var(--danger)}
 /* ---- Booking overlay (full-screen sheet) ---- */
 .booking-overlay{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;animation:sheetIn .18s ease;max-width:420px;margin:0 auto}
 @keyframes sheetIn{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
-.booking-head{flex:none;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));border-bottom:1px solid var(--line);background:rgba(22,22,22,.9)}
+.booking-head{flex:none;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));border-bottom:1px solid var(--line);background:rgba(255,255,255,.9)}
 .booking-head h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-.2px}
-.booking-close{border:none;background:rgba(255,255,255,.06);color:var(--text);width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.booking-close{border:none;background:rgba(17,17,17,.06);color:var(--text);width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .booking-body{flex:1;overflow-y:auto;padding:16px 16px 100px}
 /* Legacy dot progress — still used by HomeVisitWizard's own inline
    progress bar (unchanged, self-contained). The main BookingOverlay uses
@@ -230,7 +245,7 @@ input:invalid{border-color:var(--danger)}
 .booking-progress{display:flex;gap:6px;padding:0 16px 12px}
 .booking-progress-dot{flex:1;height:4px;border-radius:99px;background:var(--line-strong)}
 .booking-progress-dot.done,.booking-progress-dot.active{background:var(--accent)}
-.booking-footer{position:fixed;left:0;right:0;bottom:0;background:rgba(22,22,22,.92);backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom));z-index:51;display:flex;gap:10px;align-items:center;justify-content:space-between;max-width:420px;margin:0 auto}
+.booking-footer{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom));z-index:51;display:flex;gap:10px;align-items:center;justify-content:space-between;max-width:420px;margin:0 auto}
 .booking-footer .summary-line{color:var(--muted);font-size:13px}
 .booking-footer .total-line{font-weight:900;font-size:18px;font-family:var(--font-numeric)}
 .booking-footer .btn{width:auto}
@@ -239,7 +254,7 @@ input:invalid{border-color:var(--danger)}
 .step-indicator{padding:20px 16px 4px}
 .step-indicator-row{display:flex;align-items:center}
 .step-circle{width:28px;height:28px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-numeric);font-size:13px;font-weight:700;background:var(--surface-elevated);border:1px solid var(--line-strong);color:var(--faint)}
-.step-circle.active{background:var(--accent);color:var(--accent-ink);border-color:transparent;box-shadow:0 0 0 4px rgba(255,255,255,.1)}
+.step-circle.active{background:var(--accent);color:var(--accent-ink);border-color:transparent;box-shadow:0 0 0 4px rgba(17,17,17,.08)}
 .step-circle.done{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .step-connector{height:1px;flex:1;margin:0 4px 20px;background:var(--line-strong);transition:background .2s ease}
 .step-connector.done{background:var(--accent)}
@@ -264,7 +279,7 @@ input:invalid{border-color:var(--danger)}
 .item:active{transform:scale(.985);background:var(--surface-pressed)}
 .item.selected{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
 .item.selected strong{color:var(--accent-ink)}
-.item.selected .meta{color:rgba(12,12,12,.6)}
+.item.selected .meta{color:rgba(255,255,255,.65)}
 .barber-card{display:flex;align-items:center;gap:12px}
 .barber-avatar{width:44px;height:44px;border-radius:50%;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-weight:900}
 
@@ -276,34 +291,34 @@ input:invalid{border-color:var(--danger)}
 .slot{display:grid;gap:2px;place-items:center;height:42px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:10px;padding:4px;cursor:pointer;font-weight:500;font-size:13px;font-family:var(--font-numeric)}
 .slot small{color:var(--muted);font-weight:500;font-size:10px}
 .slot.selected{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:700}
-.slot.selected small{color:rgba(12,12,12,.7)}
-.slot.unavailable{background:#111111;border-color:var(--border-subtle);color:var(--text-disabled);text-decoration:line-through;cursor:not-allowed}
-.year-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:60;padding:14px;display:grid;place-items:center}
+.slot.selected small{color:rgba(255,255,255,.75)}
+.slot.unavailable{background:var(--surface-elevated);border-color:var(--border-subtle);color:var(--text-disabled);text-decoration:line-through;cursor:not-allowed}
+.year-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;padding:14px;display:grid;place-items:center}
 .year-panel{width:min(1180px,96vw);max-height:92vh;overflow:auto;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-md)}
 .year-top{display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;background:var(--surface);padding-bottom:10px;z-index:2}
-.year-top button{border:1px solid var(--line-strong);background:rgba(255,255,255,.05);color:var(--text);border-radius:var(--radius-sm);padding:9px 12px;margin-inline:3px}
+.year-top button{border:1px solid var(--line-strong);background:rgba(17,17,17,.04);color:var(--text);border-radius:var(--radius-sm);padding:9px 12px;margin-inline:3px}
 .customer-year-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .month-card{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:10px}
 .month-card h3{margin:0 0 8px;text-align:center;color:var(--text)}
 .week-row,.month-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-family:var(--font-numeric)}
 .week-row span{font-size:11px;color:var(--muted)}
-.year-day{border:0;background:rgba(255,255,255,.05);color:var(--text);border-radius:8px;min-height:28px;cursor:pointer}
+.year-day{border:0;background:rgba(17,17,17,.04);color:var(--text);border-radius:8px;min-height:28px;cursor:pointer}
 .year-day.selected{background:var(--accent);color:var(--accent-ink);font-weight:900}
 @media(max-width:400px){.customer-year-grid{grid-template-columns:1fr}}
 
 .success-card{text-align:center;display:grid;gap:10px;justify-items:center}
-.success-check{width:56px;height:56px;border-radius:50%;background:rgba(74,222,128,.14);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900}
+.success-check{width:56px;height:56px;border-radius:50%;background:rgba(22,163,74,.14);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900}
 .success-details{width:100%;text-align:right;display:grid;gap:8px;margin:10px 0}
 .success-row{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:6px;font-size:14px}
 .success-barber{display:flex;align-items:center;gap:8px}
 .success-barber-avatar{width:22px;height:22px;border-radius:50%;background-size:cover;background-position:center}
 
-.offline-banner{position:sticky;top:0;z-index:35;background:var(--danger-bg);color:#F87171;text-align:center;font-size:12.5px;font-weight:700;padding:6px 10px;border-bottom:1px solid rgba(248,113,113,.3)}
+.offline-banner{position:sticky;top:0;z-index:35;background:var(--danger-bg);color:var(--danger);text-align:center;font-size:12.5px;font-weight:700;padding:6px 10px;border-bottom:1px solid rgba(220,38,38,.25)}
 
 /* ---- Skeleton loaders (replace plain "Loading..." text) ---- */
-.skel{background:linear-gradient(100deg,rgba(255,255,255,.04) 20%,rgba(255,255,255,.09) 40%,rgba(255,255,255,.04) 60%);background-size:200% 100%;animation:skelShine 1.4s ease-in-out infinite;border-radius:var(--radius-sm)}
+.skel{background:linear-gradient(100deg,rgba(17,17,17,.04) 20%,rgba(17,17,17,.08) 40%,rgba(17,17,17,.04) 60%);background-size:200% 100%;animation:skelShine 1.4s ease-in-out infinite;border-radius:var(--radius-sm)}
 @keyframes skelShine{0%{background-position:180% 0}100%{background-position:-20% 0}}
-@media (prefers-reduced-motion:reduce){.skel{animation:none;background:rgba(255,255,255,.05)}}
+@media (prefers-reduced-motion:reduce){.skel{animation:none;background:rgba(17,17,17,.05)}}
 .skel-hero{height:180px;border-radius:var(--radius);margin-bottom:14px}
 .skel-tabs{display:flex;gap:8px;margin-bottom:12px}
 .skel-tabs .skel{height:32px;width:72px;border-radius:999px}
@@ -338,6 +353,9 @@ input:invalid{border-color:var(--danger)}
 .explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
 .explore-tile{aspect-ratio:1;overflow:hidden;background:var(--surface);cursor:pointer;position:relative}
 .explore-tile img{width:100%;height:100%;object-fit:cover;display:block}
+/* .owner-tag sits on top of an arbitrary photo, so a dark translucent chip
+   with white text stays the right legibility choice regardless of the
+   app's own light/dark theme — left unchanged from the previous theme. */
 .explore-tile .owner-tag{position:absolute;inset-inline-start:4px;bottom:4px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:999px}
 .profile-header{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:8px 0 16px}
 .profile-avatar{width:76px;height:76px;border-radius:50%;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:26px}

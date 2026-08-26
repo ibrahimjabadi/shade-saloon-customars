@@ -76,7 +76,7 @@ export function BookingActionErrorBanner() {
   const { tr } = useTranslation();
   if (!raw) return null;
   return (
-    <div className="item" style={{ marginBottom: 12, borderColor: "rgba(180,60,60,.4)" }}>
+    <div className="item" style={{ marginBottom: 12, borderColor: "rgba(220,38,38,.35)" }}>
       {displayError(raw, tr)}
     </div>
   );
