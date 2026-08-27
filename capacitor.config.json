@@ -1,0 +1,9 @@
+{
+  "appId": "com.shadisaloon.customer",
+  "appName": "Shadi Saloon",
+  "webDir": "dist",
+  "server": {
+    "url": "https://shadi-saloon-webapp.onrender.com/customer-app/",
+    "cleartext": false
+  }
+}

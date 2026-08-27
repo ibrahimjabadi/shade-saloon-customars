@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Shadi Saloon</string>
+    <string name="title_activity_main">Shadi Saloon</string>
+    <string name="package_name">com.shadisaloon.customer</string>
+    <string name="custom_url_scheme">com.shadisaloon.customer</string>
+</resources>

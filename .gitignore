@@ -5,3 +5,17 @@ node_modules/
 dist/
 dist-desktop/
 *.tsbuildinfo
+
+# Capacitor native projects (android/, ios/) — the actual project source
+# (build.gradle, AndroidManifest.xml, App.xcodeproj, etc.) IS committed;
+# only the local build output/caches below are excluded, same as
+# node_modules/ above.
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/.gradle/
+android/local.properties
+ios/App/build/
+ios/App/Pods/
+ios/App/DerivedData/
+ios/.xcode.env.local
