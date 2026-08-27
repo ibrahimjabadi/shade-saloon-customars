@@ -165,11 +165,3 @@ export interface RegisterResponse {
   customerToken: string;
   account: CustomerAccount;
 }
-
-export interface CreateBookingPayload {
-  branchId: string;
-  barberId: string;
-  serviceIds: string[];
-  start: string;
-  notes: string;
-}

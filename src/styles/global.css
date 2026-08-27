@@ -109,7 +109,6 @@ input:invalid{border-color:var(--danger)}
 .phone-with-country-row select{flex:0 0 auto;width:auto;max-width:150px}
 .phone-with-country-row input{flex:1;min-width:0}
 .muted{color:var(--muted)}
-.link-btn{background:none;border:none;color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer;padding:4px;font-family:var(--font-ui);font-size:13px}
 .verify-account-card{display:grid;gap:10px}
 .verify-account-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .verify-account-confirm{display:grid;gap:8px}

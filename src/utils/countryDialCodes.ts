@@ -51,19 +51,6 @@ export const COUNTRY_DIAL_CODES: CountryDialCode[] = [
   { iso: "AU", dial: "61", flag: "🇦🇺", nameAr: "أستراليا", nameEn: "Australia" },
 ];
 
-/** A stored phone is a single free-text string — legacy data is bare
- * Jordanian local format ("0791234567"), anything saved through this
- * picker is full E.164 ("+966501234567"). Split it back into
- * {dial,local} to prefill the two-part control. */
-export function splitPhoneForInput(phone?: string): { dial: string; local: string } {
-  const raw = String(phone || "").trim();
-  if (!raw.startsWith("+")) return { dial: "962", local: raw.replace(/^0/, "") };
-  const digits = raw.slice(1).replace(/\D/g, "");
-  const codes = [...COUNTRY_DIAL_CODES.map((c) => c.dial)].sort((a, b) => b.length - a.length);
-  const match = codes.find((d) => digits.startsWith(d));
-  return match ? { dial: match, local: digits.slice(match.length) } : { dial: "962", local: digits };
-}
-
 export function combinePhone(dial: string, local: string): string {
   const digits = String(local || "").trim().replace(/\D/g, "").replace(/^0+/, "");
   return digits ? `+${dial}${digits}` : "";
