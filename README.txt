@@ -39,9 +39,10 @@ The customer-facing app itself (everything under src/) is a React 18 +
 TypeScript single-page app, bundled with Vite. server.js is unchanged in
 spirit: a thin Express server with no business logic, whose only job is to
 serve the built app and fall back to it for client-side routing. The
-original hand-rolled vanilla-JS version (no build step, no framework) is
-kept for reference under legacy-vanilla-app/ — it's not served or built,
-just there for comparison.
+original hand-rolled vanilla-JS version (no build step, no framework) was
+kept for a while under legacy-vanilla-app/ for reference, then removed
+once the React port had settled — see git history before this line was
+added if you ever need to look back at it.
 
   index.html   → Vite's entry point (was public/app.html)
   src/         → the React app (was public/app.js, public/app.css, public/i18n.js)
