@@ -21,8 +21,13 @@ export function VerifyAccountBanner() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // Session-only dismiss -- local component state, not persisted anywhere.
+  // The account is still genuinely unverified, so this reappears next time
+  // Profile mounts (app reload, tab switch away and back) rather than
+  // silently hiding an unverified account forever.
+  const [dismissed, setDismissed] = useState(false);
 
-  if (!account) return null;
+  if (!account || dismissed) return null;
   const pending: VerifyChannel[] = [];
   if (account.email && !account.emailVerified) pending.push("email");
   if (!account.phoneVerified) pending.push("phone");
@@ -59,7 +64,17 @@ export function VerifyAccountBanner() {
 
   return (
     <div className="card verify-account-card" style={{ marginTop: 14 }}>
-      <strong>{tr("verifyAccountTitle")}</strong>
+      <div className="verify-account-head">
+        <strong>{tr("verifyAccountTitle")}</strong>
+        <button
+          type="button"
+          className="verify-account-dismiss"
+          aria-label={tr("dismiss")}
+          onClick={() => setDismissed(true)}
+        >
+          ×
+        </button>
+      </div>
       {pending.map((channel) => (
         <div key={channel} className="verify-account-row">
           <span className="muted">{tr(channel === "email" ? "verifyEmailPending" : "verifyPhonePending")}</span>

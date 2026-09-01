@@ -1,8 +1,37 @@
+import { useState } from "react";
 import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { AccountForm } from "./AccountForm";
 import { VerifyAccountBanner } from "./VerifyAccountBanner";
-import { IconCalendar, IconExplore, IconLogout } from "../shell/icons";
+import { IconCalendar, IconExplore, IconLogout, IconShield, IconGlobe } from "../shell/icons";
+
+/** Real policy/terms text (same fields ConsentBlock already shows at
+ * registration), just reachable again later from Profile -- reuses fetched
+ * settings, doesn't invent any content. */
+function PrivacyPolicyPanel({ onClose }: { onClose: () => void }) {
+  const { tr, lang } = useTranslation();
+  const settings = useAppStore((s) => s.settings);
+  const s = settings || {};
+  const policy = lang === "ar" ? s.privacyPolicyAr : s.privacyPolicyEn;
+  const terms = lang === "ar" ? s.termsAr : s.termsEn;
+  return (
+    <div className="card" style={{ marginTop: 10 }}>
+      <div className="settings-row" style={{ cursor: "default" }} onClick={onClose}>
+        <span className="settings-row-icon" aria-hidden="true">
+          <IconShield />
+        </span>
+        <span className="settings-row-label">{tr("privacyPolicy")}</span>
+      </div>
+      {policy ? <p className="muted" style={{ padding: "0 4px 6px" }}>{policy}</p> : null}
+      {terms && (
+        <>
+          <strong style={{ padding: "0 4px" }}>{tr("terms")}</strong>
+          <p className="muted" style={{ padding: "0 4px 6px" }}>{terms}</p>
+        </>
+      )}
+    </div>
+  );
+}
 
 function StatsGrid() {
   const { tr } = useTranslation();
@@ -27,13 +56,15 @@ function StatsGrid() {
   );
 }
 
-function SettingsList() {
-  const { tr } = useTranslation();
+function SettingsList({ onTogglePrivacy }: { onTogglePrivacy: () => void }) {
+  const { tr, lang, toggleLang } = useTranslation();
   const setTab = useAppStore((s) => s.setTab);
   const logout = useAppStore((s) => s.logout);
   const rows: { icon: typeof IconCalendar; label: string; onClick: () => void; danger?: boolean }[] = [
     { icon: IconCalendar, label: tr("myBookings"), onClick: () => setTab("bookings") },
     { icon: IconExplore, label: tr("exploreTab"), onClick: () => setTab("explore") },
+    { icon: IconShield, label: tr("privacyPolicy"), onClick: onTogglePrivacy },
+    { icon: IconGlobe, label: `${tr("languageRow")} — ${lang === "ar" ? "EN" : "عربي"}`, onClick: toggleLang },
     { icon: IconLogout, label: tr("logout"), onClick: logout, danger: true },
   ];
   return (
@@ -56,6 +87,7 @@ function SettingsList() {
 export function ProfileView() {
   const { tr } = useTranslation();
   const account = useAppStore((s) => s.account);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   if (account) {
     return (
@@ -71,7 +103,8 @@ export function ProfileView() {
         </div>
         <StatsGrid />
         <VerifyAccountBanner />
-        <SettingsList />
+        <SettingsList onTogglePrivacy={() => setShowPrivacy((v) => !v)} />
+        {showPrivacy && <PrivacyPolicyPanel onClose={() => setShowPrivacy(false)} />}
       </>
     );
   }
