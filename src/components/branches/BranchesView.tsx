@@ -10,6 +10,7 @@ import { OpenStatusBadge } from "../home/BusinessHours";
 export function BranchesView() {
   const { tr } = useTranslation();
   const branches = useAppStore((s) => s.branches);
+  const currentBranchId = useAppStore((s) => s.branchId);
   const switchBranch = useAppStore((s) => s.switchBranch);
   const setTab = useAppStore((s) => s.setTab);
 
@@ -28,9 +29,13 @@ export function BranchesView() {
             {b.businessHours && <OpenStatusBadge hours={b.businessHours} timezone={b.timezone} />}
           </div>
           {(b.address || b.city) && <div className="muted branch-list-area">{[b.address, b.city].filter(Boolean).join(" — ")}</div>}
-          <button className="btn secondary branch-list-cta" onClick={() => pick(b.id)}>
-            {tr("switchToBranch")}
-          </button>
+          {b.id === currentBranchId ? (
+            <div className="branch-list-current">{tr("currentBranch")}</div>
+          ) : (
+            <button className="btn secondary branch-list-cta" onClick={() => pick(b.id)}>
+              {tr("switchToBranch")}
+            </button>
+          )}
         </div>
       ))}
     </div>

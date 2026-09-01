@@ -73,6 +73,7 @@ const ar = {
   reviewBackToBookings: "العودة للحجوزات", alreadyRated: "تم تقييم هذه الزيارة ✓",
   bookingsTabUpcoming: "القادمة", bookingsTabPast: "السابقة",
   myBookingsEmptyTab: "لا يوجد حجوزات هون",
+  currentBranch: "فرعك الحالي ✓",
 } as const;
 
 const en: Record<keyof typeof ar, string> = {
@@ -143,6 +144,7 @@ const en: Record<keyof typeof ar, string> = {
   reviewBackToBookings: "Back to my bookings", alreadyRated: "You rated this visit ✓",
   bookingsTabUpcoming: "Upcoming", bookingsTabPast: "Past",
   myBookingsEmptyTab: "No bookings here",
+  currentBranch: "Your current branch ✓",
 };
 
 export const translations = { ar, en };
