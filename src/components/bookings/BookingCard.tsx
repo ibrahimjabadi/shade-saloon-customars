@@ -12,10 +12,12 @@ export function BookingCard({ booking, now }: { booking: Booking; now: number })
   const currency = settings?.currency;
   const cancelBooking = useAppStore((s) => s.cancelBooking);
   const openReschedule = useAppStore((s) => s.openReschedule);
+  const openReview = useAppStore((s) => s.openReview);
   const [cancelling, setCancelling] = useState(false);
 
   const startMs = new Date(booking.start).getTime();
   const status = booking.status || (startMs < now ? "completed" : "upcoming");
+  const showReview = status === "completed";
   const svcNames = (booking.services || []).map((s) => s.nameAr || s.name).join("، ");
   const dateLabel = booking.startLabel || new Date(booking.start).toLocaleString(lang);
 
@@ -63,6 +65,17 @@ export function BookingCard({ booking, now }: { booking: Booking; now: number })
           {canCancel && (
             <button className="btn danger" style={{ width: "auto" }} disabled={cancelling} onClick={handleCancel}>
               {cancelling ? tr("loading") : tr("cancelBooking")}
+            </button>
+          )}
+        </div>
+      )}
+      {showReview && (
+        <div className="bk-actions">
+          {booking.rated ? (
+            <span className="muted">{tr("alreadyRated")}</span>
+          ) : (
+            <button className="btn secondary" style={{ width: "auto" }} onClick={() => openReview(booking.id)}>
+              {tr("reviewTitle")}
             </button>
           )}
         </div>

@@ -48,6 +48,18 @@ export interface RescheduleState {
   error: string | null;
 }
 
+export interface ReviewState {
+  bookingId: string;
+  barberId: string;
+  barberName: string;
+  barberPhotoUrl?: string;
+  score: number; // 0 = nothing picked yet
+  comment: string;
+  submitting: boolean;
+  error: string | null;
+  success: boolean;
+}
+
 interface AppState {
   // ---- language ----
   lang: Lang;
@@ -114,6 +126,16 @@ interface AppState {
   yearCalendarOpen: boolean;
   openYearCalendar: () => void;
   closeYearCalendar: () => void;
+
+  // ---- customer satisfaction review (POST /api/customer/bookings/:id/rate
+  // -- a real endpoint that already existed backend-side with nothing on
+  // the frontend calling it yet) ----
+  review: ReviewState | null;
+  openReview: (bookingId: string) => void;
+  closeReview: () => void;
+  setReviewScore: (score: number) => void;
+  setReviewComment: (comment: string) => void;
+  submitReview: () => Promise<void>;
 
   // ---- reschedule (its own lighter overlay, same availability endpoint) ----
   reschedule: RescheduleState | null;
@@ -359,6 +381,45 @@ export const useAppStore = create<AppState>()((set, get) => ({
   yearCalendarOpen: false,
   openYearCalendar: () => set({ yearCalendarOpen: true }),
   closeYearCalendar: () => set({ yearCalendarOpen: false }),
+
+  review: null,
+  openReview: (bookingId) => {
+    const bk = (get().myBookings || []).find((x) => x.id === bookingId);
+    if (!bk || bk.status !== "completed" || bk.rated) return;
+    set({
+      review: {
+        bookingId,
+        barberId: bk.barberId || "",
+        barberName: bk.barber?.name || "",
+        barberPhotoUrl: bk.barber?.photoUrl,
+        score: 0,
+        comment: "",
+        submitting: false,
+        error: null,
+        success: false,
+      },
+    });
+  },
+  closeReview: () => set({ review: null }),
+  setReviewScore: (score) => set((s) => (s.review ? { review: { ...s.review, score, error: null } } : s)),
+  setReviewComment: (comment) => set((s) => (s.review ? { review: { ...s.review, comment } } : s)),
+  submitReview: async () => {
+    const r = get().review;
+    if (!r || r.score < 1 || r.submitting) return;
+    set({ review: { ...r, submitting: true, error: null } });
+    try {
+      await api(`/api/customer/bookings/${encodeURIComponent(r.bookingId)}/rate`, {
+        method: "POST",
+        token: get().token,
+        body: JSON.stringify({ score: r.score, comment: r.comment }),
+      });
+      set((s) => (s.review ? { review: { ...s.review, submitting: false, success: true } } : s));
+      void get().loadMyBookings(); // refresh in the background so `rated` is
+      // already current once the customer closes this thank-you screen.
+    } catch (err) {
+      set((s) => (s.review ? { review: { ...s.review, submitting: false, error: errorMessage(err) } } : s));
+    }
+  },
 
   reschedule: null,
   openReschedule: (bookingId) => {

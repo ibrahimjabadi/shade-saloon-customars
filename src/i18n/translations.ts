@@ -66,6 +66,13 @@ const ar = {
   sendCode: "إرسال رمز التأكيد", resendCode: "إعادة إرسال الرمز",
   verificationCodeSentHint: "تم إرسال رمز التأكيد، أدخله هون:", verificationCodePlaceholder: "رمز التحقق",
   confirmCode: "تأكيد الرمز",
+  reviewTitle: "قيّم زيارتك", reviewSubtitlePrefix: "مع",
+  reviewScore1: "سيئة جدًا", reviewScore2: "مقبولة", reviewScore3: "جيدة", reviewScore4: "جيدة جدًا", reviewScore5: "ممتازة",
+  reviewCommentPlaceholder: "أضف تعليقًا (اختياري)...", reviewSubmit: "إرسال التقييم",
+  reviewSuccessTitle: "شكرًا لتقييمك!", reviewSuccessBody: "رأيك بيساعدنا نحسّن الخدمة باستمرار.",
+  reviewBackToBookings: "العودة للحجوزات", alreadyRated: "تم تقييم هذه الزيارة ✓",
+  bookingsTabUpcoming: "القادمة", bookingsTabPast: "السابقة",
+  myBookingsEmptyTab: "لا يوجد حجوزات هون",
 } as const;
 
 const en: Record<keyof typeof ar, string> = {
@@ -129,6 +136,13 @@ const en: Record<keyof typeof ar, string> = {
   sendCode: "Send verification code", resendCode: "Resend code",
   verificationCodeSentHint: "Verification code sent — enter it below:", verificationCodePlaceholder: "Verification code",
   confirmCode: "Confirm code",
+  reviewTitle: "Rate your visit", reviewSubtitlePrefix: "With",
+  reviewScore1: "Very poor", reviewScore2: "Fair", reviewScore3: "Good", reviewScore4: "Very good", reviewScore5: "Excellent",
+  reviewCommentPlaceholder: "Add a comment (optional)...", reviewSubmit: "Submit rating",
+  reviewSuccessTitle: "Thanks for your rating!", reviewSuccessBody: "Your feedback helps us keep improving.",
+  reviewBackToBookings: "Back to my bookings", alreadyRated: "You rated this visit ✓",
+  bookingsTabUpcoming: "Upcoming", bookingsTabPast: "Past",
+  myBookingsEmptyTab: "No bookings here",
 };
 
 export const translations = { ar, en };

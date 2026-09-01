@@ -14,6 +14,7 @@ import { PointsView } from "./components/points/PointsView";
 import { ExploreView } from "./components/explore/ExploreView";
 import { BookingOverlay } from "./components/booking/BookingOverlay";
 import { RescheduleOverlay } from "./components/bookings/RescheduleOverlay";
+import { ReviewOverlay } from "./components/bookings/ReviewOverlay";
 import { HomeVisitOverlay } from "./components/homevisit/HomeVisitOverlay";
 import { displayError } from "./utils/errorDisplay";
 import { useTranslation } from "./hooks/useTranslation";
@@ -59,6 +60,7 @@ export default function App() {
   const tab = useAppStore((s) => s.tab);
   const booking = useAppStore((s) => s.booking);
   const reschedule = useAppStore((s) => s.reschedule);
+  const review = useAppStore((s) => s.review);
   const homeVisitOpen = useAppStore((s) => s.homeVisitOpen);
 
   useGlobalOverlayEffects();
@@ -102,6 +104,7 @@ export default function App() {
       </Shell>
       {booking && <BookingOverlay />}
       {reschedule && <RescheduleOverlay />}
+      {review && <ReviewOverlay />}
       {homeVisitOpen && <HomeVisitOverlay />}
     </>
   );

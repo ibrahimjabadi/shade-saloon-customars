@@ -140,6 +140,10 @@ export interface Booking {
   endLabel?: string;
   status?: BookingStatus;
   total?: number;
+  // Whether the booking's customer already submitted a satisfaction rating
+  // (POST /api/customer/bookings/:id/rate) -- the backend computes this from
+  // db.customerRatings on every viewBooking() call, so it's always current.
+  rated?: boolean;
 }
 
 export interface BootstrapResponse {

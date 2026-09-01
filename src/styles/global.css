@@ -312,6 +312,17 @@ input:invalid{border-color:var(--danger)}
 .success-barber{display:flex;align-items:center;gap:8px}
 .success-barber-avatar{width:22px;height:22px;border-radius:50%;background-size:cover;background-position:center}
 
+/* ---- Review overlay (ReviewOverlay.tsx) — reuses .success-card/.booking-*
+   for its shell; these are the review-specific pieces on top. ---- */
+.review-avatar{width:96px;height:96px;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;background-size:cover;background-position:center;margin-bottom:4px}
+.review-stars{display:flex;gap:6px;justify-content:center;margin:18px 0 6px}
+.review-star{background:none;border:none;padding:0;font-size:40px;line-height:1;color:var(--line-strong);cursor:pointer;transition:transform .12s ease,color .12s ease}
+@media(hover:hover){.review-star:hover{transform:scale(1.1)}}
+.review-star.filled{color:var(--warning);transform:scale(1.05)}
+.review-score-label{margin:0 0 10px;font-weight:700;color:var(--text)}
+.review-comment{min-height:90px;resize:vertical;margin-top:4px}
+.review-success-icon{width:72px;height:72px;border-radius:50%;background:rgba(217,119,6,.12);display:flex;align-items:center;justify-content:center;font-size:34px}
+
 .offline-banner{position:sticky;top:0;z-index:35;background:var(--danger-bg);color:var(--danger);text-align:center;font-size:12.5px;font-weight:700;padding:6px 10px;border-bottom:1px solid rgba(220,38,38,.25)}
 
 /* ---- Skeleton loaders (replace plain "Loading..." text) ---- */
