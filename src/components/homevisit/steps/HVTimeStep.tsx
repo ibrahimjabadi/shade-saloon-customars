@@ -18,7 +18,7 @@ export function HVTimeStep({ wizard }: { wizard: HomeVisitWizard }) {
     branchId,
   });
   const periodLabels = { morning: tr("morning"), afternoon: tr("afternoon"), evening: tr("evening") };
-  const grouped = groupSlotsByPeriod(availability.slots);
+  const grouped = groupSlotsByPeriod(availability.slots, state.date);
 
   return (
     <>

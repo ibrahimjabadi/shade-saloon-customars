@@ -57,13 +57,31 @@ export interface SlotPeriod {
   slots: Slot[];
 }
 
-export function groupSlotsByPeriod(slots: Slot[]): SlotPeriod[] {
+/** A branch that closes after midnight (e.g. 09:00-03:00) generates slots
+ * that roll into the next calendar day. Bucketing by raw getHours() alone
+ * put those post-midnight slots (hour 0, 1, 2...) back in the "morning"
+ * bucket, right after the real 9-11 AM slots and ahead of the afternoon/
+ * evening sections that chronologically come first — exactly the
+ * "shuffled" order a customer flagged as looking chaotic. Bucketing by
+ * hours-elapsed-since-businessDate's local midnight instead means a
+ * post-midnight slot lands past 24h, so it correctly sorts into "evening"
+ * (the tail end of the same continuous open session) rather than looping
+ * back to "morning". businessDate is optional only so a bare hour-of-day
+ * grouping still works if a future caller has no date in hand; every
+ * current call site has one and should pass it. */
+export function groupSlotsByPeriod(slots: Slot[], businessDate?: string): SlotPeriod[] {
+  const midnight = businessDate ? new Date(`${businessDate}T00:00:00`) : null;
+  const elapsedHours = (s: Slot) => {
+    const start = new Date(s.start);
+    if (!midnight || Number.isNaN(midnight.getTime())) return start.getHours();
+    return (start.getTime() - midnight.getTime()) / 3600000;
+  };
   const periods: { key: SlotPeriod["key"]; test: (h: number) => boolean }[] = [
     { key: "morning", test: (h) => h < 12 },
     { key: "afternoon", test: (h) => h >= 12 && h < 17 },
     { key: "evening", test: (h) => h >= 17 },
   ];
   return periods
-    .map((p) => ({ key: p.key, slots: slots.filter((s) => p.test(new Date(s.start).getHours())) }))
+    .map((p) => ({ key: p.key, slots: slots.filter((s) => p.test(elapsedHours(s))) }))
     .filter((p) => p.slots.length > 0);
 }

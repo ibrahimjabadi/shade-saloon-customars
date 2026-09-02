@@ -28,7 +28,7 @@ export function TimeStep() {
   if (!booking) return null;
 
   const periodLabels = { morning: tr("morning"), afternoon: tr("afternoon"), evening: tr("evening") };
-  const grouped = groupSlotsByPeriod(availability.slots);
+  const grouped = groupSlotsByPeriod(availability.slots, booking.date);
 
   return (
     <>
