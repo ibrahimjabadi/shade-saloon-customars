@@ -5,6 +5,7 @@ import { formatMoney } from "../../utils/money";
 import { buildCalendarLink } from "../../utils/calendar";
 import { downloadIcsFile } from "../../utils/ics";
 import { resolveMediaUrl } from "../../utils/media";
+import { formatSlotTime } from "../../utils/businessHours";
 
 /** `onDone` defaults to the in-branch wizard's own close behavior (this
  * component's original use). The home-visit wizard passes its own — it
@@ -58,7 +59,7 @@ export function SuccessScreen({ booking, onDone }: { booking: Booking; onDone?: 
         <div className="success-row">
           <span>{tr("time")}</span>
           <strong>
-            {booking.startLabel} → {booking.endLabel}
+            {formatSlotTime(booking.start, lang)} → {booking.end ? formatSlotTime(booking.end, lang) : booking.endLabel}
           </strong>
         </div>
         <div className="success-row">

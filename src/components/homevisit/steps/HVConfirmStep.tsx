@@ -3,6 +3,7 @@ import { useTranslation } from "../../../hooks/useTranslation";
 import { resolveSelectedServices, serviceName, totalPrice } from "../../../utils/booking";
 import { formatMoney } from "../../../utils/money";
 import { PROVISIONAL_TRAVEL_FEE } from "../constants";
+import { formatSlotTime } from "../../../utils/businessHours";
 import type { HomeVisitWizard } from "../useHomeVisitWizard";
 
 export function HVConfirmStep({ wizard }: { wizard: HomeVisitWizard }) {
@@ -27,7 +28,7 @@ export function HVConfirmStep({ wizard }: { wizard: HomeVisitWizard }) {
         {tr("barber")}: <strong>{barber?.name || "-"}</strong>
       </div>
       <div className="muted" style={{ marginTop: 6 }}>
-        {tr("time")}: <strong>{state.slot ? state.slot.label : "-"}</strong>
+        {tr("time")}: <strong>{state.slot ? formatSlotTime(state.slot.start, lang) : "-"}</strong>
       </div>
       <div className="muted" style={{ marginTop: 10, display: "flex", justifyContent: "space-between" }}>
         <span>{tr("services")}</span>

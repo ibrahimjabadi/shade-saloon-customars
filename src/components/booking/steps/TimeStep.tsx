@@ -1,6 +1,6 @@
 import { useAppStore } from "../../../store/appStore";
 import { useTranslation } from "../../../hooks/useTranslation";
-import { nextDays } from "../../../utils/businessHours";
+import { nextDays, formatSlotTime } from "../../../utils/businessHours";
 import { useAvailability, groupSlotsByPeriod } from "../../../hooks/useAvailability";
 import { SkeletonSlotGrid } from "../../shell/Skeletons";
 import { displayError } from "../../../utils/errorDisplay";
@@ -69,8 +69,8 @@ export function TimeStep() {
                   className={`slot ${booking.slot?.start === s.start ? "selected" : ""}`}
                   onClick={() => setBkSlot(s)}
                 >
-                  {s.label}
-                  <small>{s.endLabel}</small>
+                  {formatSlotTime(s.start, lang)}
+                  <small>{formatSlotTime(s.end, lang)}</small>
                 </button>
               ))}
             </div>

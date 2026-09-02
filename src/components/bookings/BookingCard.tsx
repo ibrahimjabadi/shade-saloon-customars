@@ -4,6 +4,7 @@ import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { formatMoney } from "../../utils/money";
 import { displayError } from "../../utils/errorDisplay";
+import { formatBookingDateTime } from "../../utils/businessHours";
 import type { TranslationKey } from "../../i18n/translations";
 
 export function BookingCard({ booking, now }: { booking: Booking; now: number }) {
@@ -19,7 +20,7 @@ export function BookingCard({ booking, now }: { booking: Booking; now: number })
   const status = booking.status || (startMs < now ? "completed" : "upcoming");
   const showReview = status === "completed";
   const svcNames = (booking.services || []).map((s) => s.nameAr || s.name).join("، ");
-  const dateLabel = booking.startLabel || new Date(booking.start).toLocaleString(lang);
+  const dateLabel = formatBookingDateTime(booking.start, lang);
 
   // Only an active, still-future booking can be touched at all — mirrors the
   // exact same status check the backend enforces server-side, so the

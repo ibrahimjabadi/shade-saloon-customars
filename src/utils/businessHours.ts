@@ -83,6 +83,27 @@ export function computeOpenStatus(hours: BusinessHours | undefined | null, timez
   return { open: false, next: findNextOpen(hours, zn.weekday) };
 }
 
+/** The backend's slot.label/endLabel are always formatted in literal
+ * English "AM"/"PM" (server.js's tLabel), which reads as foreign text
+ * dropped into an Arabic RTL screen. Slots also carry the raw ISO instant
+ * (slot.start/end), so the display time is recomputed here from that,
+ * localized to the viewer's own language — "٩:٣٠ ص" in Arabic, "9:30 AM"
+ * in English — instead of trusting the backend's fixed-language string. */
+export function formatSlotTime(iso: string, lang: string): string {
+  return new Date(iso).toLocaleTimeString(lang, { hour: "numeric", minute: "2-digit" });
+}
+
+/** Booking cards (My Bookings, home preview) used to show booking.startLabel
+ * verbatim when present — a time only ("9:30 AM"), with no date at all, so a
+ * card gave no idea which day it was for. That only fell back to a full
+ * date+time when startLabel was missing, which is why the two branches read
+ * so differently. This always renders both, consistently. */
+export function formatBookingDateTime(iso: string, lang: string): string {
+  const d = new Date(iso);
+  const datePart = d.toLocaleDateString(lang, { weekday: "short", day: "numeric", month: "short" });
+  return `${datePart} · ${formatSlotTime(iso, lang)}`;
+}
+
 export function nextDays(n: number): string[] {
   const out: string[] = [];
   for (let i = 0; i < n; i++) {

@@ -10,6 +10,7 @@ import type { Barber, Booking, Service } from "../../api/types";
 import { branchBarbers, branchServices } from "../../utils/branchCatalog";
 import { resolveMediaUrl } from "../../utils/media";
 import { avatarColorFor } from "../../utils/avatarColor";
+import { formatBookingDateTime } from "../../utils/businessHours";
 
 function nextUpcomingBooking(bookings: Booking[] | null, now: number): Booking | null {
   if (!bookings) return null;
@@ -26,7 +27,7 @@ function NextAppointmentCard({ booking }: { booking: Booking }) {
   const cancelBooking = useAppStore((s) => s.cancelBooking);
   const openReschedule = useAppStore((s) => s.openReschedule);
   const svcNames = (booking.services || []).map((s) => s.nameAr || s.name).join("، ");
-  const dateLabel = booking.startLabel || new Date(booking.start).toLocaleString(lang);
+  const dateLabel = formatBookingDateTime(booking.start, lang);
   return (
     <div className="card-accent" style={{ marginBottom: 14 }}>
       <div className="card-accent-decor-1" aria-hidden="true" />

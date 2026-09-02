@@ -3,6 +3,7 @@ import { useTranslation } from "../../../hooks/useTranslation";
 import { resolveSelectedServices, totalPrice, serviceName } from "../../../utils/booking";
 import { formatMoney } from "../../../utils/money";
 import { displayError } from "../../../utils/errorDisplay";
+import { formatSlotTime } from "../../../utils/businessHours";
 
 export function ConfirmStep() {
   const { tr, lang } = useTranslation();
@@ -31,7 +32,7 @@ export function ConfirmStep() {
       </div>
       <div className="booking-summary-row">
         <span className="booking-summary-label">{tr("time")}</span>
-        <span className="booking-summary-value">{booking.slot ? booking.slot.label : "-"}</span>
+        <span className="booking-summary-value">{booking.slot ? formatSlotTime(booking.slot.start, lang) : "-"}</span>
       </div>
       <div className="booking-summary-row booking-summary-total">
         <span className="booking-summary-label">{tr("total")}</span>

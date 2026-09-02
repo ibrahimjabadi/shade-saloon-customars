@@ -98,7 +98,12 @@ body{background:#F1F1EE}
 @media(hover:hover){.btn.ghost:hover{color:var(--text)}}
 .btn.small{padding:0 16px;height:36px;font-size:13px;width:auto;border-radius:10px}
 label{display:grid;gap:8px;color:var(--muted);font-size:13px}
-input,textarea,select{width:100%;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);padding:0 14px;min-height:48px;transition:border-color .15s ease,box-shadow .15s ease;font-family:inherit}
+/* font-size:16px is load-bearing, not a style choice: iOS Safari auto-zooms
+   the whole page on focus for any form control whose computed font-size is
+   under 16px. These sit inside <label> (font-size:13px above), which they'd
+   otherwise inherit — that was the real cause of the page suddenly zooming
+   in on every tapped field. */
+input,textarea,select{width:100%;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);padding:0 14px;min-height:48px;transition:border-color .15s ease,box-shadow .15s ease;font-family:inherit;font-size:16px}
 textarea{padding:14px}
 input::placeholder,textarea::placeholder{color:var(--faint)}
 input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(17,17,17,.08)}

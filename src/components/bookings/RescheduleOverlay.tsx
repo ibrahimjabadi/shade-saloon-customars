@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
-import { nextDays } from "../../utils/businessHours";
+import { nextDays, formatSlotTime } from "../../utils/businessHours";
 import { useAvailability } from "../../hooks/useAvailability";
 import { SkeletonSlotGrid } from "../shell/Skeletons";
 import { displayError } from "../../utils/errorDisplay";
@@ -79,8 +79,8 @@ export function RescheduleOverlay() {
                   className={`slot ${reschedule.slot?.start === s.start ? "selected" : ""}`}
                   onClick={() => setRescheduleSlot(s)}
                 >
-                  {s.label}
-                  <small>{s.endLabel}</small>
+                  {formatSlotTime(s.start, lang)}
+                  <small>{formatSlotTime(s.end, lang)}</small>
                 </button>
               ))}
             </div>
