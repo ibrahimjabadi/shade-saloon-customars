@@ -286,6 +286,14 @@ input:invalid{border-color:var(--danger)}
 .booking-summary-total{font-weight:700}
 .booking-summary-total .booking-summary-label,.booking-summary-total .booking-summary-value{font-size:15px;color:var(--text);font-family:var(--font-numeric)}
 
+.confirm-salon-card{display:flex;flex-direction:column;gap:6px;padding:0;overflow:hidden}
+.confirm-salon-photo{width:100%;height:120px;background-size:cover;background-position:center;background-color:var(--surface-elevated)}
+.confirm-salon-card .branch-list-head,.confirm-salon-card .branch-list-area{padding:0 16px}
+.confirm-salon-card .branch-list-head{margin-top:14px}
+.confirm-salon-card .branch-list-area{padding-bottom:14px}
+.confirm-appointment-row{display:flex;align-items:center;gap:12px;padding:2px 2px}
+.confirm-appointment-row svg{flex:none;width:20px;height:20px;color:var(--faint)}
+
 .chips{display:flex;gap:8px;overflow:auto;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2}
 .chip{white-space:nowrap;border:1px solid var(--line-strong);border-radius:999px;padding:8px 14px;background:var(--surface);color:var(--text);font-weight:600;cursor:pointer}
 .chip.active{background:var(--accent);color:var(--accent-ink);font-weight:700;border-color:transparent}
@@ -346,6 +354,10 @@ input:invalid{border-color:var(--danger)}
 
 .success-card{text-align:center;display:grid;gap:10px;justify-items:center}
 .success-check{width:56px;height:56px;border-radius:50%;background:rgba(22,163,74,.14);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900}
+.success-hero{width:100%;border-radius:20px;padding:34px 20px 28px;display:grid;justify-items:center;gap:12px;background:linear-gradient(160deg,#2A2A2A 0%,#111111 55%,#000000 100%);box-shadow:var(--shadow-gold)}
+.success-hero-logo{width:44px;height:44px;object-fit:contain;border-radius:12px;background:rgba(255,255,255,.12);padding:8px}
+.success-hero-check{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900}
+.success-hero h2{margin:0;font-size:19px;font-weight:800;color:#fff;text-wrap:balance}
 .success-details{width:100%;text-align:right;display:grid;gap:8px;margin:10px 0}
 .success-row{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:6px;font-size:14px}
 .success-barber{display:flex;align-items:center;gap:8px}
@@ -357,6 +369,13 @@ input:invalid{border-color:var(--danger)}
 .review-stars{display:flex;gap:6px;justify-content:center;margin:18px 0 6px}
 .review-star{background:none;border:none;padding:0;font-size:40px;line-height:1;color:var(--line-strong);cursor:pointer;transition:transform .12s ease,color .12s ease}
 @media(hover:hover){.review-star:hover{transform:scale(1.1)}}
+
+/* ---- Post-booking Google-review nudge (GoogleReviewPrompt.tsx) ---- */
+.google-review-card{width:100%;display:grid;justify-items:center;gap:10px;text-align:center}
+.google-review-stars{display:flex;gap:6px}
+.google-review-star{background:none;border:none;padding:4px;color:var(--faint);cursor:pointer;transition:transform .12s ease,color .12s ease}
+.google-review-star svg{width:28px;height:28px}
+@media(hover:hover){.google-review-star:hover{color:var(--warning);transform:scale(1.12)}}
 .review-star.filled{color:var(--warning);transform:scale(1.05)}
 .review-score-label{margin:0 0 10px;font-weight:700;color:var(--text)}
 .review-comment{min-height:90px;resize:vertical;margin-top:4px}

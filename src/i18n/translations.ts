@@ -74,6 +74,17 @@ const ar = {
   bookingsTabUpcoming: "القادمة", bookingsTabPast: "السابقة",
   myBookingsEmptyTab: "لا يوجد حجوزات هون",
   currentBranch: "فرعك الحالي ✓", languageRow: "اللغة", dismiss: "إغلاق",
+  firstVisit: "أول زيارة؟",
+  firstVisitQuestion: "هل هذه أول زيارة لك عندنا؟",
+  firstVisitYes: "نعم", firstVisitYesSub: "هذه أول زيارة لي",
+  firstVisitNo: "لا", firstVisitNoSub: "زرت من قبل",
+  reviewAndConfirm: "مراجعة وتأكيد",
+  cancellationPolicyTitle: "سياسة الإلغاء",
+  cancellationPolicyFree: "يمكنك الإلغاء مجانًا في أي وقت.",
+  cancellationPolicyRestricted: "الإلغاء عبر التطبيق غير متاح — تواصل مع الصالون مباشرة لتعديل موعدك.",
+  rateOnGoogle: "شو رأيك بزيارتك؟ قيّمنا على خرائط جوجل",
+  tapStarToRate: "اضغط على نجمة لتقييمنا",
+  notNow: "ليس الآن",
 } as const;
 
 const en: Record<keyof typeof ar, string> = {
@@ -145,6 +156,17 @@ const en: Record<keyof typeof ar, string> = {
   bookingsTabUpcoming: "Upcoming", bookingsTabPast: "Past",
   myBookingsEmptyTab: "No bookings here",
   currentBranch: "Your current branch ✓", languageRow: "Language", dismiss: "Dismiss",
+  firstVisit: "First visit?",
+  firstVisitQuestion: "Is this your first visit with us?",
+  firstVisitYes: "Yes", firstVisitYesSub: "This is my first visit",
+  firstVisitNo: "No", firstVisitNoSub: "I've visited before",
+  reviewAndConfirm: "Review and confirm",
+  cancellationPolicyTitle: "Cancellation policy",
+  cancellationPolicyFree: "Cancel for free anytime.",
+  cancellationPolicyRestricted: "Cancelling in-app isn't available — contact the salon directly to change your appointment.",
+  rateOnGoogle: "How was your visit? Rate us on Google Maps",
+  tapStarToRate: "Tap a star to rate us",
+  notNow: "Not now",
 };
 
 export const translations = { ar, en };

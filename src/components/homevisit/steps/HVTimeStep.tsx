@@ -1,7 +1,7 @@
 import { useAppStore } from "../../../store/appStore";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { nextDays, formatSlotTime } from "../../../utils/businessHours";
-import { useAvailability, groupSlotsByPeriod } from "../../../hooks/useAvailability";
+import { useAvailability } from "../../../hooks/useAvailability";
 import { SkeletonSlotGrid } from "../../shell/Skeletons";
 import { displayError } from "../../../utils/errorDisplay";
 import type { HomeVisitWizard } from "../useHomeVisitWizard";
@@ -17,9 +17,6 @@ export function HVTimeStep({ wizard }: { wizard: HomeVisitWizard }) {
     serviceIds: state.selectedServices,
     branchId,
   });
-  const periodLabels = { morning: tr("morning"), afternoon: tr("afternoon"), evening: tr("evening") };
-  const grouped = groupSlotsByPeriod(availability.slots, state.date);
-
   return (
     <>
       <p className="muted" style={{ marginBottom: 10 }}>
@@ -43,20 +40,16 @@ export function HVTimeStep({ wizard }: { wizard: HomeVisitWizard }) {
           <span className="meta">{tr("noSlotsHint")}</span>
         </div>
       )}
-      {availability.status === "ready" &&
-        grouped.map((p) => (
-          <div key={p.key}>
-            <h4 className="time-period-head">{periodLabels[p.key]}</h4>
-            <div className="slot-grid">
-              {p.slots.map((s, i) => (
-                <button key={i} className={`slot ${state.slot?.start === s.start ? "selected" : ""}`} onClick={() => setSlot(s)}>
-                  {formatSlotTime(s.start, lang)}
-                  <small>{formatSlotTime(s.end, lang)}</small>
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
+      {availability.status === "ready" && availability.slots.length > 0 && (
+        <div className="slot-grid">
+          {availability.slots.map((s, i) => (
+            <button key={i} className={`slot ${state.slot?.start === s.start ? "selected" : ""}`} onClick={() => setSlot(s)}>
+              {formatSlotTime(s.start, lang)}
+              <small>{formatSlotTime(s.end, lang)}</small>
+            </button>
+          ))}
+        </div>
+      )}
       {availability.status === "error" && <div className="item">{displayError(availability.error, tr)}</div>}
     </>
   );

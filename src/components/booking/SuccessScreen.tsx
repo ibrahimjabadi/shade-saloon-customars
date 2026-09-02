@@ -6,6 +6,7 @@ import { buildCalendarLink } from "../../utils/calendar";
 import { downloadIcsFile } from "../../utils/ics";
 import { resolveMediaUrl } from "../../utils/media";
 import { formatSlotTime } from "../../utils/businessHours";
+import { GoogleReviewPrompt } from "./GoogleReviewPrompt";
 
 /** `onDone` defaults to the in-branch wizard's own close behavior (this
  * component's original use). The home-visit wizard passes its own — it
@@ -18,6 +19,8 @@ export function SuccessScreen({ booking, onDone }: { booking: Booking; onDone?: 
   const closeBooking = useAppStore((s) => s.closeBooking);
   const setTab = useAppStore((s) => s.setTab);
   const currency = useAppStore((s) => s.settings?.currency);
+  const logoUrl = useAppStore((s) => s.settings?.logoUrl);
+  const fullBranch = useAppStore((s) => s.branches.find((b) => b.id === booking.branchId));
 
   const branch = booking.branch || {};
   const barber = booking.barber || {};
@@ -32,7 +35,11 @@ export function SuccessScreen({ booking, onDone }: { booking: Booking; onDone?: 
 
   return (
     <div className="success-card">
-      <div className="success-check">✓</div>
+      <div className="success-hero">
+        {logoUrl && <img className="success-hero-logo" src={resolveMediaUrl(logoUrl)} alt="" />}
+        <div className="success-hero-check">✓</div>
+        <h2>{tr("success")}</h2>
+      </div>
       <p className="muted">{tr("seeYouSoon")}</p>
       <div className="success-details">
         <div className="success-row">
@@ -67,6 +74,7 @@ export function SuccessScreen({ booking, onDone }: { booking: Booking; onDone?: 
           <strong>{formatMoney(booking.total, currency, lang)}</strong>
         </div>
       </div>
+      {fullBranch?.googleMapsUrl && <GoogleReviewPrompt googleMapsUrl={fullBranch.googleMapsUrl} />}
       <a className="btn secondary" href={calUrl} target="_blank" rel="noopener">
         📅 {tr("addToCalendar")}
       </a>

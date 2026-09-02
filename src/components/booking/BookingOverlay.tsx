@@ -7,6 +7,7 @@ import { formatMoney } from "../../utils/money";
 import { ServicesStep } from "./steps/ServicesStep";
 import { BarberStep } from "./steps/BarberStep";
 import { TimeStep } from "./steps/TimeStep";
+import { FirstVisitStep } from "./steps/FirstVisitStep";
 import { AccountStep } from "./steps/AccountStep";
 import { ConfirmStep } from "./steps/ConfirmStep";
 import { SuccessScreen } from "./SuccessScreen";
@@ -53,10 +54,11 @@ export function BookingOverlay() {
     0: tr("services"),
     1: tr("barber"),
     2: tr("time"),
-    3: tr("account"),
-    4: tr("details"),
+    3: tr("firstVisit"),
+    4: tr("account"),
+    5: tr("reviewAndConfirm"),
   };
-  const stepsList = account ? [0, 1, 2, 4] : [0, 1, 2, 3, 4];
+  const stepsList = account ? [0, 1, 2, 3, 5] : [0, 1, 2, 3, 4, 5];
   const selected = resolveSelectedServices(services, booking.selectedServices);
 
   return (
@@ -72,8 +74,9 @@ export function BookingOverlay() {
         {booking.step === 0 && <ServicesStep />}
         {booking.step === 1 && <BarberStep />}
         {booking.step === 2 && <TimeStep />}
-        {booking.step === 3 && <AccountStep />}
-        {booking.step === 4 && <ConfirmStep />}
+        {booking.step === 3 && <FirstVisitStep />}
+        {booking.step === 4 && <AccountStep />}
+        {booking.step === 5 && <ConfirmStep />}
       </div>
       <div className="booking-footer">
         <div>
@@ -88,7 +91,7 @@ export function BookingOverlay() {
               {tr("back")}
             </button>
           )}
-          {booking.step < 4 ? (
+          {booking.step < 5 ? (
             <button className="btn gold" style={{ width: "auto" }} onClick={bookingNext}>
               {tr("next")}
             </button>

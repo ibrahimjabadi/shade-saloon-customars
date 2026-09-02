@@ -18,6 +18,7 @@ export interface Settings {
   showCustomerPrices?: boolean;
   showCustomerBranches?: boolean;
   customerPortalTheme?: CustomerPortalTheme;
+  logoUrl?: string;
 }
 
 // Admin-configurable branding/layout for this app, set from the backend's

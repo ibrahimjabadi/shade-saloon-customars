@@ -32,6 +32,9 @@ export interface BookingWizardState {
   date: string;
   slot: Slot | null;
   cat: string;
+  // null = not answered yet (gates the FirstVisit step the same way
+  // slot/barberId gate theirs below).
+  isFirstVisit: boolean | null;
   success: Booking | null;
   submitting: boolean;
   error: string | null;
@@ -115,6 +118,7 @@ interface AppState {
   setBkDate: (date: string) => void;
   setBkSlot: (slot: Slot | null) => void;
   setBkCategory: (cat: string) => void;
+  setBkFirstVisit: (v: boolean) => void;
   bookingNext: () => void;
   bookingPrev: () => void;
   jumpToConfirmStep: () => void;
@@ -312,6 +316,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
         date: new Date().toISOString().slice(0, 10),
         slot: null,
         cat: "all",
+        isFirstVisit: null,
         success: null,
         submitting: false,
         error: null,
@@ -334,6 +339,9 @@ export const useAppStore = create<AppState>()((set, get) => ({
     set((s) => (s.booking ? { booking: { ...s.booking, date, slot: null } } : s)),
   setBkSlot: (slot) => set((s) => (s.booking ? { booking: { ...s.booking, slot } } : s)),
   setBkCategory: (cat) => set((s) => (s.booking ? { booking: { ...s.booking, cat } } : s)),
+  setBkFirstVisit: (v) => set((s) => (s.booking ? { booking: { ...s.booking, isFirstVisit: v } } : s)),
+  // Steps: 0 services, 1 barber, 2 time, 3 first-visit question, 4 account
+  // (skipped once s.account exists), 5 confirm.
   bookingNext: () =>
     set((s) => {
       const b = s.booking;
@@ -341,25 +349,28 @@ export const useAppStore = create<AppState>()((set, get) => ({
       if (b.step === 0 && !b.selectedServices.length) return s;
       if (b.step === 1 && !b.barberId) return s;
       if (b.step === 2 && !b.slot) return s;
-      if (b.step === 3 && !s.account) return s;
+      if (b.step === 3 && b.isFirstVisit === null) return s;
+      if (b.step === 4 && !s.account) return s;
       let next = b.step + 1;
-      if (next === 3 && s.account) next = 4;
-      return { booking: { ...b, step: Math.min(4, next) } };
+      if (next === 4 && s.account) next = 5;
+      return { booking: { ...b, step: Math.min(5, next) } };
     }),
   bookingPrev: () =>
     set((s) => {
       const b = s.booking;
       if (!b) return s;
       let prev = b.step - 1;
-      if (prev === 3 && s.account) prev = 2;
+      if (prev === 4 && s.account) prev = 3;
       return { booking: { ...b, step: Math.max(0, prev) } };
     }),
-  jumpToConfirmStep: () => set((s) => (s.booking ? { booking: { ...s.booking, step: 4 } } : s)),
+  jumpToConfirmStep: () => set((s) => (s.booking ? { booking: { ...s.booking, step: 5 } } : s)),
   confirmBooking: async () => {
     const b = get().booking;
     if (!b || b.submitting || !b.slot) return;
     set({ booking: { ...b, submitting: true, error: null } });
     try {
+      const firstVisitNote =
+        b.isFirstVisit === null ? "" : b.isFirstVisit ? "أول زيارة: نعم" : "أول زيارة: لا";
       const res = await api<Booking>("/api/customer/bookings", {
         method: "POST",
         token: get().token,
@@ -368,7 +379,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
           barberId: b.barberId,
           serviceIds: b.selectedServices,
           start: b.slot.start,
-          notes: "",
+          notes: firstVisitNote,
         }),
       });
       set((s) => (s.booking ? { booking: { ...s.booking, submitting: false, success: res } } : s));
