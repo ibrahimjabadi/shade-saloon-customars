@@ -80,7 +80,6 @@ export function RescheduleOverlay() {
                   onClick={() => setRescheduleSlot(s)}
                 >
                   {formatSlotTime(s.start, lang)}
-                  <small>{formatSlotTime(s.end, lang)}</small>
                 </button>
               ))}
             </div>

@@ -64,7 +64,6 @@ export function TimeStep() {
               onClick={() => setBkSlot(s)}
             >
               {formatSlotTime(s.start, lang)}
-              <small>{formatSlotTime(s.end, lang)}</small>
             </button>
           ))}
         </div>

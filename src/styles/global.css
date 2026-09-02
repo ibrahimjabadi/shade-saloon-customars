@@ -323,11 +323,17 @@ input:invalid{border-color:var(--danger)}
 .time-period-head{margin:14px 0 8px;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .date-picker-trigger{display:flex!important;align-items:center;justify-content:center;gap:8px}
 .date-picker-trigger svg{width:16px;height:16px;flex:none}
-.slot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:8px 0}
-.slot{display:grid;gap:2px;place-items:center;height:42px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:10px;padding:4px;cursor:pointer;font-weight:500;font-size:13px;font-family:var(--font-numeric);scroll-margin-top:270px}
-.slot small{color:var(--muted);font-weight:500;font-size:10px}
+/* Single-column list, not a dense multi-column grid: with 15-min-interval
+   slots across a long open session, a 3-up grid of near-identical tiny
+   buttons was exactly the "wall of buttons" a customer called chaotic.
+   One full-width row per time, just the start time (the footer already
+   shows total duration) reads far more like a normal picker. */
+.slot-grid{display:flex;flex-direction:column;gap:8px;padding:8px 0}
+.slot{display:flex;align-items:center;justify-content:space-between;width:100%;height:52px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:12px;padding:0 18px;cursor:pointer;font-weight:600;font-size:15px;font-family:var(--font-numeric);scroll-margin-top:270px;transition:border-color .15s ease,background .15s ease}
+.slot::after{content:"";width:18px;height:18px;flex:none;border-radius:50%;border:1.5px solid var(--line-strong)}
 .slot.selected{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:700}
-.slot.selected small{color:rgba(255,255,255,.75)}
+.slot.selected::after{border-color:#fff;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='3'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/12px no-repeat}
+@media(hover:hover){.slot:hover{border-color:var(--faint)}}
 .slot.unavailable{background:var(--surface-elevated);border-color:var(--border-subtle);color:var(--text-disabled);text-decoration:line-through;cursor:not-allowed}
 /* One-month-at-a-time mobile date picker (YearCalendarModal) -- the old
    version was a 3-months-per-row desktop grid inside a 1180px-wide panel,
@@ -395,8 +401,8 @@ input:invalid{border-color:var(--danger)}
 .skel-row .skel-line.w-60{width:60%}
 .skel-row .skel-line.w-40{width:40%;margin-top:8px}
 .skel-row .skel-btn{height:34px;width:64px;border-radius:var(--radius-sm);flex:none}
-.skel-slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
-.skel-slot-grid .skel{height:52px}
+.skel-slot-grid{display:flex;flex-direction:column;gap:8px}
+.skel-slot-grid .skel{height:52px;border-radius:12px}
 .skel-card{padding:16px;border:1px solid var(--line-strong);border-radius:var(--radius);margin-bottom:10px}
 .skel-card .skel-line{height:14px;border-radius:7px;margin-bottom:8px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

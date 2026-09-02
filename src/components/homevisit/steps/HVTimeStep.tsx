@@ -45,7 +45,6 @@ export function HVTimeStep({ wizard }: { wizard: HomeVisitWizard }) {
           {availability.slots.map((s, i) => (
             <button key={i} className={`slot ${state.slot?.start === s.start ? "selected" : ""}`} onClick={() => setSlot(s)}>
               {formatSlotTime(s.start, lang)}
-              <small>{formatSlotTime(s.end, lang)}</small>
             </button>
           ))}
         </div>
