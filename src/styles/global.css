@@ -286,27 +286,50 @@ input:invalid{border-color:var(--danger)}
 .barber-avatar{width:44px;height:44px;border-radius:50%;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-weight:900}
 
 .mini-date-head{display:grid;grid-template-columns:1fr auto;gap:10px;margin:6px 0 10px}
-.quick-days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0 14px}
-.quick-day{border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);padding:11px 8px;font-weight:700;font-family:var(--font-numeric)}
+/* Was a repeat(4,...) grid -- 7 (or 14) days wrapped into an uneven last
+   row instead of reading as one continuous week strip. A single
+   horizontally-scrolling row (the same pattern any native calendar app
+   uses for a day picker) reads cleanly regardless of day count and never
+   leaves a half-empty trailing row. */
+.quick-days{display:flex;gap:8px;margin:10px 0 14px}
+.quick-days-scroll{overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.quick-days-scroll::-webkit-scrollbar{display:none}
+.quick-day{flex:0 0 56px;display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);padding:10px 4px;font-family:var(--font-numeric)}
+.quick-day-dow{font-size:11px;font-weight:600;color:var(--muted)}
+.quick-day-num{font-size:16px;font-weight:800}
 .quick-day.selected{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.quick-day.selected .quick-day-dow{color:rgba(255,255,255,.75)}
+.time-period-head{margin:14px 0 8px;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.date-picker-trigger{display:flex!important;align-items:center;justify-content:center;gap:8px}
+.date-picker-trigger svg{width:16px;height:16px;flex:none}
 .slot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:8px 0}
 .slot{display:grid;gap:2px;place-items:center;height:42px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:10px;padding:4px;cursor:pointer;font-weight:500;font-size:13px;font-family:var(--font-numeric)}
 .slot small{color:var(--muted);font-weight:500;font-size:10px}
 .slot.selected{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:700}
 .slot.selected small{color:rgba(255,255,255,.75)}
 .slot.unavailable{background:var(--surface-elevated);border-color:var(--border-subtle);color:var(--text-disabled);text-decoration:line-through;cursor:not-allowed}
-.year-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;padding:14px;display:grid;place-items:center}
-.year-panel{width:min(1180px,96vw);max-height:92vh;overflow:auto;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-md)}
-.year-top{display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;background:var(--surface);padding-bottom:10px;z-index:2}
-.year-top button{border:1px solid var(--line-strong);background:rgba(17,17,17,.04);color:var(--text);border-radius:var(--radius-sm);padding:9px 12px;margin-inline:3px}
-.customer-year-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.month-card{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:10px}
-.month-card h3{margin:0 0 8px;text-align:center;color:var(--text)}
-.week-row,.month-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-family:var(--font-numeric)}
-.week-row span{font-size:11px;color:var(--muted)}
-.year-day{border:0;background:rgba(17,17,17,.04);color:var(--text);border-radius:8px;min-height:28px;cursor:pointer}
-.year-day.selected{background:var(--accent);color:var(--accent-ink);font-weight:900}
-@media(max-width:400px){.customer-year-grid{grid-template-columns:1fr}}
+/* One-month-at-a-time mobile date picker (YearCalendarModal) -- the old
+   version was a 3-months-per-row desktop grid inside a 1180px-wide panel,
+   unreachable on this app's actual (mobile-only) viewports; it only ever
+   fell back to 12 stacked single-month grids, a long scroll to reach any
+   date past a couple months out. */
+.year-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;padding:14px;display:flex;align-items:flex-end;justify-content:center}
+.year-panel{width:100%;max-width:420px;max-height:88vh;overflow:auto;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius) var(--radius) 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+.year-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;position:sticky;top:0;background:var(--surface);padding-bottom:12px;margin-bottom:2px}
+.year-top h2{grid-column:2;margin:0;text-align:center;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.year-top h2 svg{width:18px;height:18px}
+.year-close{grid-column:1;border:none;background:rgba(17,17,17,.06);color:var(--text);width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;justify-self:start}
+.year-nav{grid-column:3;display:flex;align-items:center;gap:4px;justify-self:end}
+.year-nav button{border:1px solid var(--line-strong);background:transparent;color:var(--text);border-radius:var(--radius-sm);width:34px;height:34px;font-size:16px;cursor:pointer}
+.year-today-btn{width:auto!important;padding:0 10px!important;font-size:11px!important;font-weight:700}
+.week-row,.month-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-family:var(--font-numeric)}
+.week-row{margin-bottom:6px}
+.week-row span{font-size:11px;color:var(--muted);font-weight:700}
+.month-days-solo{gap:8px}
+.year-day{border:1px solid transparent;background:var(--surface-elevated);color:var(--text);border-radius:12px;min-height:40px;cursor:pointer;font-size:13.5px;font-weight:600}
+.year-day.is-today{border-color:var(--accent)}
+.year-day.selected{background:var(--accent);color:var(--accent-ink);font-weight:900;border-color:transparent}
+.year-day:disabled{background:transparent;color:var(--text-disabled);cursor:not-allowed}
 
 .success-card{text-align:center;display:grid;gap:10px;justify-items:center}
 .success-check{width:56px;height:56px;border-radius:50%;background:rgba(22,163,74,.14);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900}

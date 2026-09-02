@@ -4,6 +4,7 @@ import { nextDays } from "../../../utils/businessHours";
 import { useAvailability, groupSlotsByPeriod } from "../../../hooks/useAvailability";
 import { SkeletonSlotGrid } from "../../shell/Skeletons";
 import { displayError } from "../../../utils/errorDisplay";
+import { IconCalendar } from "../../shell/icons";
 
 export function TimeStep() {
   const { tr, lang } = useTranslation();
@@ -37,14 +38,15 @@ export function TimeStep() {
           had no case left where it did something the hook wasn't already
           doing — removed rather than kept as a no-op. */}
       <div className="mini-date-head">
-        <button className="btn secondary" onClick={openYearCalendar}>
-          📅 {booking.date}
+        <button className="btn secondary date-picker-trigger" onClick={openYearCalendar}>
+          <IconCalendar /> {new Date(`${booking.date}T12:00:00`).toLocaleDateString(lang, { weekday: "long", day: "numeric", month: "long" })}
         </button>
       </div>
-      <div className="quick-days">
+      <div className="quick-days quick-days-scroll">
         {nextDays(7).map((d) => (
           <button key={d} className={`quick-day ${booking.date === d ? "selected" : ""}`} onClick={() => setBkDate(d)}>
-            {new Date(d).toLocaleDateString(lang, { weekday: "short", day: "numeric" })}
+            <span className="quick-day-dow">{new Date(d).toLocaleDateString(lang, { weekday: "short" })}</span>
+            <span className="quick-day-num">{new Date(d).toLocaleDateString(lang, { day: "numeric" })}</span>
           </button>
         ))}
       </div>
@@ -59,7 +61,7 @@ export function TimeStep() {
       {availability.status === "ready" &&
         grouped.map((p) => (
           <div key={p.key}>
-            <h4 className="muted">{periodLabels[p.key]}</h4>
+            <h4 className="time-period-head">{periodLabels[p.key]}</h4>
             <div className="slot-grid">
               {p.slots.map((s, i) => (
                 <button

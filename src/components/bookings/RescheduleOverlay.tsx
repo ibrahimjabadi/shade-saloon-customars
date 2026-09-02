@@ -50,14 +50,15 @@ export function RescheduleOverlay() {
         </button>
       </div>
       <div className="booking-body">
-        <div className="quick-days">
+        <div className="quick-days quick-days-scroll">
           {nextDays(14).map((d) => (
             <button
               key={d}
               className={`quick-day ${reschedule.date === d ? "selected" : ""}`}
               onClick={() => setRescheduleDate(d)}
             >
-              {new Date(d).toLocaleDateString(lang, { weekday: "short", day: "numeric" })}
+              <span className="quick-day-dow">{new Date(d).toLocaleDateString(lang, { weekday: "short" })}</span>
+              <span className="quick-day-num">{new Date(d).toLocaleDateString(lang, { day: "numeric" })}</span>
             </button>
           ))}
         </div>
