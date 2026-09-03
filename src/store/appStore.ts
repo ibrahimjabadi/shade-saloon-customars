@@ -49,6 +49,10 @@ export interface RescheduleState {
   slot: Slot | null;
   submitting: boolean;
   error: string | null;
+  // Bumped on a failed confirm to force useAvailability to refetch -- this
+  // overlay stays mounted across attempts (unlike TimeStep), so date/
+  // barberId not changing means the hook otherwise has no reason to.
+  refreshKey: number;
 }
 
 export interface ReviewState {
@@ -334,10 +338,10 @@ export const useAppStore = create<AppState>()((set, get) => ({
       return { booking: { ...s.booking, selectedServices, slot: null } };
     }),
   setBkBarber: (id) =>
-    set((s) => (s.booking ? { booking: { ...s.booking, barberId: id, slot: null } } : s)),
+    set((s) => (s.booking ? { booking: { ...s.booking, barberId: id, slot: null, error: null } } : s)),
   setBkDate: (date) =>
-    set((s) => (s.booking ? { booking: { ...s.booking, date, slot: null } } : s)),
-  setBkSlot: (slot) => set((s) => (s.booking ? { booking: { ...s.booking, slot } } : s)),
+    set((s) => (s.booking ? { booking: { ...s.booking, date, slot: null, error: null } } : s)),
+  setBkSlot: (slot) => set((s) => (s.booking ? { booking: { ...s.booking, slot, error: null } } : s)),
   setBkCategory: (cat) => set((s) => (s.booking ? { booking: { ...s.booking, cat } } : s)),
   setBkFirstVisit: (v) => set((s) => (s.booking ? { booking: { ...s.booking, isFirstVisit: v } } : s)),
   // Steps: 0 services, 1 barber, 2 time, 3 first-visit question, 4 account
@@ -385,7 +389,19 @@ export const useAppStore = create<AppState>()((set, get) => ({
       set((s) => (s.booking ? { booking: { ...s.booking, submitting: false, success: res } } : s));
       set({ myBookings: null }); // force a refresh next time the tab is opened
     } catch (err) {
-      set((s) => (s.booking ? { booking: { ...s.booking, submitting: false, error: errorMessage(err) } } : s));
+      // Every createBooking() failure this can realistically hit is about
+      // the chosen time itself no longer working -- most commonly someone
+      // else took the slot between it being shown here and Confirm being
+      // tapped (the exact race the availability list can't fully prevent
+      // on its own). Sending the user back to Time -- clearing the now-bad
+      // slot and re-mounting TimeStep, which always refetches on mount --
+      // means they land on a corrected list instead of a dead-end retry
+      // loop where tapping Confirm again just fails the same way.
+      set((s) =>
+        s.booking
+          ? { booking: { ...s.booking, submitting: false, error: errorMessage(err), slot: null, step: 2 } }
+          : s
+      );
     }
   },
 
@@ -446,13 +462,14 @@ export const useAppStore = create<AppState>()((set, get) => ({
         slot: null,
         submitting: false,
         error: null,
+        refreshKey: 0,
       },
     });
   },
   closeReschedule: () => set({ reschedule: null }),
   setRescheduleDate: (date) =>
-    set((s) => (s.reschedule ? { reschedule: { ...s.reschedule, date, slot: null } } : s)),
-  setRescheduleSlot: (slot) => set((s) => (s.reschedule ? { reschedule: { ...s.reschedule, slot } } : s)),
+    set((s) => (s.reschedule ? { reschedule: { ...s.reschedule, date, slot: null, error: null } } : s)),
+  setRescheduleSlot: (slot) => set((s) => (s.reschedule ? { reschedule: { ...s.reschedule, slot, error: null } } : s)),
   confirmReschedule: async () => {
     const r = get().reschedule;
     if (!r || !r.slot || r.submitting) return;
@@ -466,7 +483,14 @@ export const useAppStore = create<AppState>()((set, get) => ({
       set({ reschedule: null, myBookingsActionError: null });
       await get().loadMyBookings();
     } catch (err) {
-      set((s) => (s.reschedule ? { reschedule: { ...s.reschedule, submitting: false, error: errorMessage(err) } } : s));
+      // Stays on this same screen (no separate Time/Confirm steps here) --
+      // clear the now-bad slot and bump refreshKey so useAvailability
+      // refetches even though date/barberId didn't change.
+      set((s) =>
+        s.reschedule
+          ? { reschedule: { ...s.reschedule, submitting: false, error: errorMessage(err), slot: null, refreshKey: s.reschedule.refreshKey + 1 } }
+          : s
+      );
     }
   },
 

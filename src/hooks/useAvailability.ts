@@ -8,6 +8,11 @@ export interface AvailabilityParams {
   barberId: string;
   serviceIds: string[];
   branchId: string;
+  // Bump this (e.g. a counter) to force a refetch even when nothing else
+  // changed -- needed by callers that stay mounted across a failed booking
+  // attempt (RescheduleOverlay), unlike TimeStep/HVTimeStep which naturally
+  // refetch by unmounting/remounting when the wizard steps away and back.
+  refreshKey?: number;
 }
 
 type AvailabilityState =
@@ -47,7 +52,7 @@ export function useAvailability(params: AvailabilityParams | null): Availability
       });
     return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params?.businessDate, params?.barberId, params?.serviceIds.join(","), params?.branchId, token]);
+  }, [params?.businessDate, params?.barberId, params?.serviceIds.join(","), params?.branchId, params?.refreshKey, token]);
 
   return state;
 }

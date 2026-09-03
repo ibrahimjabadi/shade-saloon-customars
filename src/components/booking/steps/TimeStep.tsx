@@ -47,6 +47,11 @@ export function TimeStep() {
           </button>
         ))}
       </div>
+      {/* Shown when confirmBooking() sent the user back here after the slot
+          they'd picked stopped working (most often: someone else booked it
+          first) -- explains why they landed back on Time instead of Confirm,
+          on top of the corrected list TimeStep always refetches on mount. */}
+      {booking.error && <div className="muted" style={{ marginBottom: 10 }}>{displayError(booking.error, tr)}</div>}
       {availability.status === "loading" && <SkeletonSlotGrid count={9} />}
       {availability.status === "ready" && availability.slots.length === 0 && (
         <div className="item">

@@ -73,13 +73,13 @@ export function useHomeVisitWizard() {
     });
   }
   function setBarber(id: string) {
-    setState((s) => ({ ...s, barberId: id, slot: null }));
+    setState((s) => ({ ...s, barberId: id, slot: null, error: null }));
   }
   function setDate(date: string) {
-    setState((s) => ({ ...s, date, slot: null }));
+    setState((s) => ({ ...s, date, slot: null, error: null }));
   }
   function setSlot(slot: Slot | null) {
-    setState((s) => ({ ...s, slot }));
+    setState((s) => ({ ...s, slot, error: null }));
   }
   function jumpToConfirm() {
     setState((s) => ({ ...s, step: STEP_CONFIRM }));
@@ -137,7 +137,12 @@ export function useHomeVisitWizard() {
       });
       setState((s) => ({ ...s, submitting: false, success: res }));
     } catch (err) {
-      setState((s) => ({ ...s, submitting: false, error: resolveErrorMessage(err, tr) }));
+      // Same reasoning as the in-branch wizard's confirmBooking(): a
+      // createBooking() failure here is realistically always about the
+      // chosen time (most often someone else took the slot first), so send
+      // the user back to Time with the stale slot cleared instead of
+      // leaving them able to retry the exact same doomed slot again.
+      setState((s) => ({ ...s, submitting: false, error: resolveErrorMessage(err, tr), slot: null, step: STEP_TIME }));
     }
   }
 

@@ -32,6 +32,7 @@ export function HVTimeStep({ wizard }: { wizard: HomeVisitWizard }) {
           </button>
         ))}
       </div>
+      {state.error && <div className="muted" style={{ marginBottom: 10 }}>{displayError(state.error, tr)}</div>}
       {availability.status === "loading" && <SkeletonSlotGrid count={9} />}
       {availability.status === "ready" && availability.slots.length === 0 && (
         <div className="item">

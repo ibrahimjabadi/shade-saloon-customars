@@ -30,6 +30,7 @@ export function RescheduleOverlay() {
           barberId: reschedule.barberId,
           serviceIds: reschedule.serviceIds,
           branchId: reschedule.branchId,
+          refreshKey: reschedule.refreshKey,
         }
       : null
   );
