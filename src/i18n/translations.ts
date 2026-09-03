@@ -85,6 +85,7 @@ const ar = {
   rateOnGoogle: "شو رأيك بزيارتك؟ قيّمنا على خرائط جوجل",
   tapStarToRate: "اضغط على نجمة لتقييمنا",
   notNow: "ليس الآن",
+  slotNoLongerAvailable: "الوقت يلي اخترته صار محجوز — اختر وقت تاني من القائمة.",
 } as const;
 
 const en: Record<keyof typeof ar, string> = {
@@ -167,6 +168,7 @@ const en: Record<keyof typeof ar, string> = {
   rateOnGoogle: "How was your visit? Rate us on Google Maps",
   tapStarToRate: "Tap a star to rate us",
   notNow: "Not now",
+  slotNoLongerAvailable: "The time you picked just got booked — choose another one from the list.",
 };
 
 export const translations = { ar, en };

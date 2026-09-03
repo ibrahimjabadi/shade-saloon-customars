@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { nextDays, formatSlotTime } from "../../utils/businessHours";
@@ -14,6 +14,7 @@ export function RescheduleOverlay() {
   const setRescheduleSlot = useAppStore((s) => s.setRescheduleSlot);
   const confirmReschedule = useAppStore((s) => s.confirmReschedule);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const [staleSlotNotice, setStaleSlotNotice] = useState(false);
 
   // Focus once, the first time this overlay mounts — not on every state
   // change while it's open. Because this only runs on mount (empty deps),
@@ -34,6 +35,19 @@ export function RescheduleOverlay() {
         }
       : null
   );
+
+  // See TimeStep's identical effect: useAvailability polls in the
+  // background, so a slot can vanish from the list while this overlay is
+  // open, not just after a failed confirm.
+  useEffect(() => {
+    if (availability.status !== "ready" || !reschedule?.slot) return;
+    const stillThere = availability.slots.some((s) => s.start === reschedule.slot!.start);
+    if (!stillThere) {
+      setRescheduleSlot(null);
+      setStaleSlotNotice(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availability.slots]);
 
   if (!reschedule) return null;
 
@@ -78,7 +92,10 @@ export function RescheduleOverlay() {
                 <button
                   key={i}
                   className={`slot ${reschedule.slot?.start === s.start ? "selected" : ""}`}
-                  onClick={() => setRescheduleSlot(s)}
+                  onClick={() => {
+                    setStaleSlotNotice(false);
+                    setRescheduleSlot(s);
+                  }}
                 >
                   {formatSlotTime(s.start, lang)}
                 </button>
@@ -86,6 +103,7 @@ export function RescheduleOverlay() {
             </div>
           )}
           {availability.status === "error" && <div className="item">{displayError(availability.error, tr)}</div>}
+          {staleSlotNotice && <div className="muted" style={{ marginTop: 10 }}>{tr("slotNoLongerAvailable")}</div>}
           {reschedule.error && (
             <div className="muted" style={{ marginTop: 10 }}>
               {displayError(reschedule.error, tr)}

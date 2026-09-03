@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useAppStore } from "../../../store/appStore";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { nextDays, formatSlotTime } from "../../../utils/businessHours";
@@ -13,6 +14,7 @@ export function TimeStep() {
   const setBkDate = useAppStore((s) => s.setBkDate);
   const setBkSlot = useAppStore((s) => s.setBkSlot);
   const openYearCalendar = useAppStore((s) => s.openYearCalendar);
+  const [staleSlotNotice, setStaleSlotNotice] = useState(false);
 
   const availability = useAvailability(
     booking
@@ -24,6 +26,22 @@ export function TimeStep() {
         }
       : null
   );
+
+  // useAvailability polls in the background (see its own comment), so a
+  // slot someone else just took can vanish from the list while it's on
+  // screen, not just after this customer's own Confirm tap fails. If that
+  // slot happened to be the one already selected here, clear it instead of
+  // silently leaving a dead selection the customer would only discover at
+  // Confirm.
+  useEffect(() => {
+    if (availability.status !== "ready" || !booking?.slot) return;
+    const stillThere = availability.slots.some((s) => s.start === booking.slot!.start);
+    if (!stillThere) {
+      setBkSlot(null);
+      setStaleSlotNotice(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availability.slots]);
 
   if (!booking) return null;
 
@@ -52,6 +70,7 @@ export function TimeStep() {
           first) -- explains why they landed back on Time instead of Confirm,
           on top of the corrected list TimeStep always refetches on mount. */}
       {booking.error && <div className="muted" style={{ marginBottom: 10 }}>{displayError(booking.error, tr)}</div>}
+      {staleSlotNotice && <div className="muted" style={{ marginBottom: 10 }}>{tr("slotNoLongerAvailable")}</div>}
       {availability.status === "loading" && <SkeletonSlotGrid count={9} />}
       {availability.status === "ready" && availability.slots.length === 0 && (
         <div className="item">
@@ -66,7 +85,10 @@ export function TimeStep() {
             <button
               key={i}
               className={`slot ${booking.slot?.start === s.start ? "selected" : ""}`}
-              onClick={() => setBkSlot(s)}
+              onClick={() => {
+                setStaleSlotNotice(false);
+                setBkSlot(s);
+              }}
             >
               {formatSlotTime(s.start, lang)}
             </button>

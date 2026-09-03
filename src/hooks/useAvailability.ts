@@ -21,6 +21,16 @@ type AvailabilityState =
   | { status: "error"; slots: Slot[]; error: string }
   | { status: "ready"; slots: Slot[] };
 
+// Background refresh interval while a slot list is on screen. A customer
+// sitting on the time picker should see a slot vanish as soon as someone
+// else takes it, not just discover it the hard way after their own Confirm
+// tap fails -- that reactive recovery still exists (see confirmBooking()/
+// confirmReschedule()/useHomeVisitWizard's submit()) as the last line of
+// defense, this is what keeps the list itself honest the whole time it's
+// visible. 20s balances "stays current" against hammering the endpoint
+// from every customer with the picker open.
+const BACKGROUND_REFRESH_MS = 20000;
+
 /** Same intent as the original loadSlots()/loadRescheduleSlots(): fetch
  * availability for the current date/barber/services combo, and make sure a
  * fast date/barber switch cancels the stale in-flight request instead of
@@ -36,21 +46,47 @@ export function useAvailability(params: AvailabilityParams | null): Availability
       setState({ status: "idle", slots: [] });
       return;
     }
-    const controller = new AbortController();
-    setState({ status: "loading", slots: [] });
+    let cancelled = false;
     const qs = new URLSearchParams({
       businessDate: params.businessDate,
       barberId: params.barberId,
       serviceIds: params.serviceIds.join(","),
       branchId: params.branchId,
-    });
-    api<AvailabilityResponse>(`/api/availability?${qs.toString()}`, { signal: controller.signal, token })
-      .then((d) => setState({ status: "ready", slots: d.slots || [] }))
-      .catch((err) => {
-        if (err instanceof DOMException && err.name === "AbortError") return;
-        setState({ status: "error", slots: [], error: "__key:errGeneric" });
-      });
-    return () => controller.abort();
+    }).toString();
+
+    // isBackgroundRefresh skips the loading state (and its skeleton) --
+    // periodic re-fetches should silently swap in fresh data, not blank
+    // the list every 20s while the customer is looking at it.
+    function load(isBackgroundRefresh: boolean) {
+      const controller = new AbortController();
+      if (!isBackgroundRefresh) setState({ status: "loading", slots: [] });
+      api<AvailabilityResponse>(`/api/availability?${qs}`, { signal: controller.signal, token })
+        .then((d) => {
+          if (cancelled) return;
+          setState({ status: "ready", slots: d.slots || [] });
+        })
+        .catch((err) => {
+          if (cancelled || (err instanceof DOMException && err.name === "AbortError")) return;
+          // A background refresh failing (e.g. a dropped connection) isn't
+          // worth surfacing as an error over a list that's already showing
+          // -- just skip this tick and try again on the next one.
+          if (isBackgroundRefresh) return;
+          setState({ status: "error", slots: [], error: "__key:errGeneric" });
+        });
+      return controller;
+    }
+
+    let controller = load(false);
+    const interval = setInterval(() => {
+      controller.abort();
+      controller = load(true);
+    }, BACKGROUND_REFRESH_MS);
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+      clearInterval(interval);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.businessDate, params?.barberId, params?.serviceIds.join(","), params?.branchId, params?.refreshKey, token]);
 
