@@ -1,17 +1,14 @@
 import { useAppStore } from "../../../store/appStore";
-import { useTranslation } from "../../../hooks/useTranslation";
 import { resolveMediaUrl } from "../../../utils/media";
 import { avatarColorFor } from "../../../utils/avatarColor";
 import type { HomeVisitWizard } from "../useHomeVisitWizard";
 
 export function HVBarberStep({ wizard }: { wizard: HomeVisitWizard }) {
-  const { tr } = useTranslation();
   const branchId = useAppStore((s) => s.branchId);
   const barbers = useAppStore((s) => s.barbers.filter((b) => b.branchId === branchId));
 
   return (
     <>
-      <p className="muted" style={{ marginBottom: 10 }}>{tr("homeVisitBarberNote")}</p>
       <div className="grid">
         {barbers.map((b) => (
           <div

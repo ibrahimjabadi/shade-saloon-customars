@@ -37,8 +37,8 @@ export function HVTimeStep({ wizard }: { wizard: HomeVisitWizard }) {
     <>
       <p className="muted" style={{ marginBottom: 10 }}>
         {lang === "ar"
-          ? "الأوقات المعروضة حاليًا بدون هامش تنقّل إضافي — رح تنضبط تلقائيًا لما يتوفر نظام توفر مخصص للزيارات المنزلية."
-          : "Times shown don't include an extra travel buffer yet — this will adjust automatically once a dedicated home-visit availability system exists."}
+          ? "الأوقات المعروضة هي وقت وصول الحلاق إلى موقعك."
+          : "Times shown are the barber's arrival time at your location."}
       </p>
       <div className="quick-days quick-days-scroll">
         {nextDays(7).map((d) => (
