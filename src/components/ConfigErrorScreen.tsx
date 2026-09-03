@@ -5,11 +5,11 @@ import { useTranslation } from "../hooks/useTranslation";
 export function ConfigErrorScreen({ message }: { message: string }) {
   const { tr } = useTranslation();
   const isPlaceholder = API_BASE.includes("YOUR-BACKEND-URL-HERE") || !API_BASE;
-  const title = isPlaceholder ? "لسا ما ضبطتي رابط السيرفر" : "تعذّر الاتصال بالسيرفر";
+  const title = isPlaceholder ? "لم يتم ضبط رابط الخادم بعد" : "تعذّر الاتصال بالخادم";
   const resolved = displayError(message, tr);
   const detail = isPlaceholder
-    ? "افتحي ملف public/config.js وحطي رابط السيرفر الرئيسي الفعلي بدل النص التجريبي، ثم أعيدي تحميل الصفحة."
-    : `تأكد أن رابط السيرفر بملف config.js صحيح وأن السيرفر يعمل. (${resolved})`;
+    ? "افتح ملف public/config.js وضع رابط الخادم الرئيسي الفعلي بدلًا من النص التجريبي، ثم أعد تحميل الصفحة."
+    : `تأكد من صحة رابط الخادم في ملف config.js ومن أن الخادم يعمل. (${resolved})`;
   return (
     <div style={{ padding: "60px 20px", textAlign: "center", maxWidth: 520, margin: "0 auto" }}>
       <h2 style={{ marginBottom: 10 }}>{title}</h2>

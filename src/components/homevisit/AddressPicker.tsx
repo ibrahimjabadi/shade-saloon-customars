@@ -98,7 +98,7 @@ export function AddressPicker({
 
   function useMyLocation() {
     if (!("geolocation" in navigator)) {
-      setGeoError(lang === "ar" ? "المتصفح ما بيدعم تحديد الموقع" : "Geolocation isn't supported by this browser");
+      setGeoError(lang === "ar" ? "لا يدعم المتصفح تحديد الموقع" : "Geolocation isn't supported by this browser");
       return;
     }
     setLocating(true);
@@ -112,7 +112,7 @@ export function AddressPicker({
         setLocating(false);
         setGeoError(
           lang === "ar"
-            ? "ما قدرنا نوصل لموقعك — تأكد من السماح بالوصول للموقع، أو حدد المكان يدويًا على الخريطة"
+            ? "تعذّر الوصول إلى موقعك — تأكد من السماح بالوصول إلى الموقع، أو حدّد المكان يدويًا على الخريطة"
             : "Couldn't access your location — check location permission, or tap the map to set it manually"
         );
       },
@@ -128,7 +128,7 @@ export function AddressPicker({
       <div ref={mapElRef} className="address-map" />
       {geoError && <p className="muted" style={{ color: "var(--danger)" }}>{geoError}</p>}
       <p className="muted">
-        {lang === "ar" ? "أو اضغط على أي مكان بالخريطة لتحديد موقعك بدقة." : "Or tap anywhere on the map to place your location precisely."}
+        {lang === "ar" ? "أو اضغط في أي مكان على الخريطة لتحديد موقعك بدقة." : "Or tap anywhere on the map to place your location precisely."}
       </p>
       {value && (
         <div className="item" style={{ cursor: "default" }}>
