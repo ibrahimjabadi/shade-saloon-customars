@@ -389,17 +389,33 @@ export const useAppStore = create<AppState>()((set, get) => ({
       set((s) => (s.booking ? { booking: { ...s.booking, submitting: false, success: res } } : s));
       set({ myBookings: null }); // force a refresh next time the tab is opened
     } catch (err) {
-      // Every createBooking() failure this can realistically hit is about
-      // the chosen time itself no longer working -- most commonly someone
-      // else took the slot between it being shown here and Confirm being
-      // tapped (the exact race the availability list can't fully prevent
-      // on its own). Sending the user back to Time -- clearing the now-bad
-      // slot and re-mounting TimeStep, which always refetches on mount --
-      // means they land on a corrected list instead of a dead-end retry
-      // loop where tapping Confirm again just fails the same way.
+      // Only a real rejection from the backend (ApiError -- the server
+      // actually evaluated the request and said no, e.g. someone else took
+      // the slot, or it's now outside schedule) means the chosen time
+      // itself stopped working. Bounce back to Time in that case only --
+      // clearing the now-bad slot and re-mounting TimeStep, which always
+      // refetches on mount, lands the customer on a corrected list instead
+      // of a dead-end retry loop where tapping Confirm again just fails the
+      // same way.
+      //
+      // A network/timeout failure (e.g. the backend was still waking up
+      // from Render's free-tier cold start) never reached that check --
+      // the originally selected slot is most likely still fine. Bouncing
+      // the customer back and discarding their selection over a pure
+      // connectivity hiccup would be its own unnecessary friction, so this
+      // keeps them on Confirm with the same slot still selected and just
+      // shows the network error, ready to retry with one more tap.
+      const isRealRejection = err instanceof ApiError;
       set((s) =>
         s.booking
-          ? { booking: { ...s.booking, submitting: false, error: errorMessage(err), slot: null, step: 2 } }
+          ? {
+              booking: {
+                ...s.booking,
+                submitting: false,
+                error: errorMessage(err),
+                ...(isRealRejection ? { slot: null, step: 2 } : {}),
+              },
+            }
           : s
       );
     }
@@ -483,12 +499,22 @@ export const useAppStore = create<AppState>()((set, get) => ({
       set({ reschedule: null, myBookingsActionError: null });
       await get().loadMyBookings();
     } catch (err) {
-      // Stays on this same screen (no separate Time/Confirm steps here) --
-      // clear the now-bad slot and bump refreshKey so useAvailability
-      // refetches even though date/barberId didn't change.
+      // Stays on this same screen (no separate Time/Confirm steps here).
+      // Only a real ApiError rejection (the slot itself stopped working)
+      // clears it and bumps refreshKey to force a re-fetch -- a network/
+      // timeout failure leaves the selection alone so retrying is one tap,
+      // not a re-pick (see confirmBooking()'s identical reasoning).
+      const isRealRejection = err instanceof ApiError;
       set((s) =>
         s.reschedule
-          ? { reschedule: { ...s.reschedule, submitting: false, error: errorMessage(err), slot: null, refreshKey: s.reschedule.refreshKey + 1 } }
+          ? {
+              reschedule: {
+                ...s.reschedule,
+                submitting: false,
+                error: errorMessage(err),
+                ...(isRealRejection ? { slot: null, refreshKey: s.reschedule.refreshKey + 1 } : {}),
+              },
+            }
           : s
       );
     }

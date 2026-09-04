@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { PickedLocation } from "./AddressPicker";
 import type { Booking, Slot } from "../../api/types";
-import { api, resolveErrorMessage } from "../../api/client";
+import { api, resolveErrorMessage, ApiError } from "../../api/client";
 import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { formatMoney } from "../../utils/money";
@@ -137,12 +137,20 @@ export function useHomeVisitWizard() {
       });
       setState((s) => ({ ...s, submitting: false, success: res }));
     } catch (err) {
-      // Same reasoning as the in-branch wizard's confirmBooking(): a
-      // createBooking() failure here is realistically always about the
-      // chosen time (most often someone else took the slot first), so send
-      // the user back to Time with the stale slot cleared instead of
-      // leaving them able to retry the exact same doomed slot again.
-      setState((s) => ({ ...s, submitting: false, error: resolveErrorMessage(err, tr), slot: null, step: STEP_TIME }));
+      // Same reasoning as the in-branch wizard's confirmBooking(): only a
+      // real ApiError rejection (the server evaluated the request and
+      // refused it -- someone else took the slot, or it's now outside
+      // schedule) means the chosen time itself stopped working, so only
+      // that case sends the user back to Time with the slot cleared. A
+      // network/timeout failure leaves the selection in place -- the slot
+      // is most likely still fine, so retrying is one tap, not a re-pick.
+      const isRealRejection = err instanceof ApiError;
+      setState((s) => ({
+        ...s,
+        submitting: false,
+        error: resolveErrorMessage(err, tr),
+        ...(isRealRejection ? { slot: null, step: STEP_TIME } : {}),
+      }));
     }
   }
 
