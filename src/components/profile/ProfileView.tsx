@@ -3,7 +3,7 @@ import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { AccountForm } from "./AccountForm";
 import { VerifyAccountBanner } from "./VerifyAccountBanner";
-import { IconCalendar, IconExplore, IconLogout, IconShield, IconGlobe } from "../shell/icons";
+import { IconBuilding, IconCalendar, IconLogout, IconShield, IconGlobe, IconStar } from "../shell/icons";
 
 /** Real policy/terms text (same fields ConsentBlock already shows at
  * registration), just reachable again later from Profile -- reuses fetched
@@ -62,7 +62,8 @@ function SettingsList({ onTogglePrivacy }: { onTogglePrivacy: () => void }) {
   const logout = useAppStore((s) => s.logout);
   const rows: { icon: typeof IconCalendar; label: string; onClick: () => void; danger?: boolean }[] = [
     { icon: IconCalendar, label: tr("myBookings"), onClick: () => setTab("bookings") },
-    { icon: IconExplore, label: tr("exploreTab"), onClick: () => setTab("explore") },
+    { icon: IconBuilding, label: tr("branchesTab"), onClick: () => setTab("branches") },
+    { icon: IconStar, label: tr("pointsTab"), onClick: () => setTab("points") },
     { icon: IconShield, label: tr("privacyPolicy"), onClick: onTogglePrivacy },
     { icon: IconGlobe, label: `${tr("languageRow")} — ${lang === "ar" ? "EN" : "عربي"}`, onClick: toggleLang },
     { icon: IconLogout, label: tr("logout"), onClick: logout, danger: true },

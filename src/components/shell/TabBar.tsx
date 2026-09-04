@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useAppStore, type Tab } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
-import { IconBuilding, IconCalendar, IconHome, IconStar, IconUser } from "./icons";
+import { IconCalendar, IconExplore, IconHome, IconMapPin, IconUser } from "./icons";
 
 function TabButton({
   active,
@@ -39,18 +39,29 @@ function BookTabButton({ label }: { label: string }) {
   return <TabButton active={active} onClick={() => openBooking()} icon={<IconCalendar />} label={label} />;
 }
 
+// Same shape as BookTabButton — Home Visit is the homeVisitOpen overlay
+// flag (see appStore.ts), not a `tab` destination either.
+function HomeVisitTabButton({ label }: { label: string }) {
+  const active = useAppStore((s) => !!s.homeVisitOpen);
+  const openHomeVisit = useAppStore((s) => s.openHomeVisit);
+  return <TabButton active={active} onClick={openHomeVisit} icon={<IconMapPin />} label={label} />;
+}
+
 export function TabBar() {
   const { lang, tr } = useTranslation();
   return (
     <div className="app-tabbar" role="tablist" aria-label={lang === "ar" ? "التنقل الرئيسي" : "Main navigation"}>
       <NavTabButton id="home" icon={<IconHome />} label={tr("home")} />
       <BookTabButton label={tr("bookTab")} />
-      <NavTabButton id="branches" icon={<IconBuilding />} label={tr("branchesTab")} />
-      <NavTabButton id="points" icon={<IconStar />} label={tr("pointsTab")} />
-      {/* Profile also "owns" the two relocated screens (My Bookings, Explore)
-          reached via its settings list — stays visually active while on
-          either, so users don't lose their place in the bottom nav. */}
-      <NavTabButton id="profile" icon={<IconUser />} label={tr("profile")} extraActive={["bookings", "explore"]} />
+      <HomeVisitTabButton label={tr("homeVisitTab")} />
+      <NavTabButton id="explore" icon={<IconExplore />} label={tr("exploreTab")} />
+      {/* Profile also "owns" the relocated screens (My Bookings, Branches,
+          Points) reached via its settings list — stays visually active
+          while on any of them, so users don't lose their place in the
+          bottom nav. Branches/Points moved here (from their own tab slots)
+          to make room for Home Visit/Explore becoming primary tabs instead
+          of secondary/buried entry points. */}
+      <NavTabButton id="profile" icon={<IconUser />} label={tr("profile")} extraActive={["bookings", "branches", "points"]} />
     </div>
   );
 }
