@@ -237,9 +237,22 @@ export const useAppStore = create<AppState>()((set, get) => ({
       // path prefix ("/customer-app/branch/xyz").
       const m = window.location.pathname.match(/\/branch\/([^/]+)/);
       let branchId = m ? decodeURIComponent(m[1]) : get().branchId;
+
+      // Per-barber deep link: /barber/xyz — meant for a link a barber can
+      // share on their own (Instagram bio, WhatsApp status, etc.) that opens
+      // the app straight into booking with them specifically preselected,
+      // at their own branch, rather than making the customer find them
+      // manually. Falls through to normal branch resolution below if the id
+      // doesn't match any current barber (deleted/renamed barber, typo'd
+      // link, ...) instead of leaving the customer on a dead end.
+      const bm = window.location.pathname.match(/\/barber\/([^/]+)/);
+      const deepLinkBarber = bm ? patch.barbers!.find((b) => b.id === decodeURIComponent(bm[1])) : undefined;
+      if (deepLinkBarber) branchId = deepLinkBarber.branchId;
+
       if (!branchId || !branches.some((b) => b.id === branchId)) branchId = branches[0]?.id || "";
       patch.branchId = branchId;
       set(patch);
+      if (deepLinkBarber) get().openBooking(undefined, deepLinkBarber.id);
 
       if (get().token) {
         try {

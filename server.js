@@ -62,6 +62,7 @@ app.get("/customer",(req,res)=>res.sendFile(path.join(DIST_DIR,"index.html")));
 app.get("/branches",(req,res)=>res.sendFile(path.join(DIST_DIR,"index.html")));
 app.get("/branch",(req,res)=>res.sendFile(path.join(DIST_DIR,"index.html")));
 app.get("/branch/:id",(req,res)=>res.sendFile(path.join(DIST_DIR,"index.html")));
+app.get("/barber/:id",(req,res)=>res.sendFile(path.join(DIST_DIR,"index.html")));
 app.get("/",(req,res)=>res.sendFile(path.join(DIST_DIR,"index.html")));
 app.get("*",(req,res)=>res.sendFile(path.join(DIST_DIR,"index.html")));
 
