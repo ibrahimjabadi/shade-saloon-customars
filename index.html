@@ -28,6 +28,17 @@
   <script src="/config.js"></script>
 </head>
 <body>
+  <!--
+    App intro/splash: shown as a full-viewport overlay from the moment the
+    page starts loading, before React ever mounts. Self-contained (styles
+    + images inlined, scoped under #shadiAppIntro) -- shared verbatim with
+    the admin app (SHADI_SALOON_BACKEND's public/js/appIntro.js), so keep
+    both copies in sync if it's ever changed. __shadiIntroReadyElId is set
+    to "root" (this app's mount point) since the script defaults to "app",
+    which is the admin app's own id.
+  -->
+  <script>window.__shadiIntroReadyElId = 'root';</script>
+  <script src="/js/appIntro.js"></script>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
