@@ -18,7 +18,7 @@
    system. Page background stays pure #FFFFFF; accent stays near-black. */
 :root{
   --bg:#FFFFFF;--surface:#FAFAFB;--surface-elevated:#F4F4F6;--surface-pressed:#EDEDF1;
-  --text:#0A0A0A;--muted:#6B6B73;--faint:#9B9BA3;--text-disabled:#C4C4CC;
+  --text:#0A0A0A;--muted:#5C5C63;--faint:#6E6E77;--text-disabled:#C4C4CC;
   --line:#F1F1F4;--line-strong:#E7E7EC;--border-subtle:#F4F4F6;
   --accent:#111111;--accent-ink:#FFFFFF;--accent-soft:rgba(17,17,17,.08);
   /* Named for the dark-theme overlay wash they used to be — still the two
