@@ -9,11 +9,17 @@
    applied via document.documentElement.style.setProperty at boot (see
    App.tsx) — these :root values are just the default when no override is
    set. That override logic (including the light/dark ink flip based on the
-   chosen color's luminance) is unchanged by this theme swap. */
+   chosen color's luminance) is unchanged by this theme swap.
+   2026-09-10: cool-neutral retune (same change applied to the admin app's
+   tokens) -- the neutrals leaned faintly warm (surface #F8F8F6, text
+   #5C5C5A/#9A9A96, lines #E4E4E0); swapped for a brighter surface
+   (#FAFAFB), deeper primary text (#0A0A0A), and greys that lean a hair
+   cool instead of beige, per a request for a crisper black-and-white
+   system. Page background stays pure #FFFFFF; accent stays near-black. */
 :root{
-  --bg:#FFFFFF;--surface:#F8F8F6;--surface-elevated:#F1F1EE;--surface-pressed:#E8E8E5;
-  --text:#111111;--muted:#5C5C5A;--faint:#9A9A96;--text-disabled:#C5C5C0;
-  --line:#EDEDE9;--line-strong:#E4E4E0;--border-subtle:#F1F1EE;
+  --bg:#FFFFFF;--surface:#FAFAFB;--surface-elevated:#F4F4F6;--surface-pressed:#EDEDF1;
+  --text:#0A0A0A;--muted:#6B6B73;--faint:#9B9BA3;--text-disabled:#C4C4CC;
+  --line:#F1F1F4;--line-strong:#E7E7EC;--border-subtle:#F4F4F6;
   --accent:#111111;--accent-ink:#FFFFFF;--accent-soft:rgba(17,17,17,.08);
   /* Named for the dark-theme overlay wash they used to be — still the two
      hover/active "wash" tokens for .btn.secondary, just re-tinted dark now
@@ -38,7 +44,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
 /* Body paints a hair-off-white outside the 420px app container on wide
    viewports so the container's hairline border (below) actually reads
    against it — pure white-on-white would hide it entirely. */
-body{background:#F1F1EE}
+body{background:#F4F4F6}
 #root{min-height:100vh;display:flex;flex-direction:column;max-width:420px;margin:0 auto;background:var(--bg);position:relative}
 @media(min-width:421px){#root{border-inline:1px solid var(--line-strong)}}
 .app-topbar{
@@ -81,7 +87,7 @@ body{background:#F1F1EE}
 
 /* ---- Shared cards / inputs (reused across tabs) ---- */
 .card{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius);padding:16px;transition:border-color .18s ease-out,background .18s ease-out}
-@media(hover:hover){.card:hover{border-color:#D0D0CC;background:#FBFBFA}}
+@media(hover:hover){.card:hover{border-color:#D6D6DD;background:#FCFCFD}}
 .grid{display:grid;gap:12px}
 .btn{border:0;border-radius:14px;padding:0 24px;background:var(--surface);color:var(--text);font-weight:700;font-size:15px;cursor:pointer;width:100%;height:52px;font-family:var(--font-ui);border:1px solid var(--line-strong);transition:transform .08s ease-in,background .15s ease}
 .btn:active{transform:scale(.97)}
