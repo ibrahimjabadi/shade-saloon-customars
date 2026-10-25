@@ -447,3 +447,8 @@ input:invalid{border-color:var(--danger)}
 @media(min-width:421px){
   .app-content-inner{max-width:420px}
 }
+
+/* 2026-10-25: text-style secondary actions in the sign-in steps
+   (AccountForm: resend code / change number). */
+.link-btn{background:none;border:0;padding:6px 0;font:inherit;font-size:13px;font-weight:700;color:var(--text-2,#5C5C63);text-decoration:underline;cursor:pointer;justify-self:start}
+.link-btn:disabled{opacity:.5;cursor:default}

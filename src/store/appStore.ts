@@ -9,6 +9,7 @@ import type {
   CustomerAccount,
   RegisterPayload,
   RegisterResponse,
+  AuthStartResponse,
   Service,
   Settings,
   Slot,
@@ -75,7 +76,12 @@ interface AppState {
   // ---- auth ----
   token: string;
   account: CustomerAccount | null;
-  register: (payload: RegisterPayload) => Promise<RegisterResponse>;
+  /** Sign-in step 1 (existing account) -- see AccountForm. */
+  authStart: (payload: { phone: string; email?: string }) => Promise<AuthStartResponse>;
+  /** Sign-up: creates the account, then a code is emailed (no session yet). */
+  register: (payload: RegisterPayload) => Promise<AuthStartResponse>;
+  /** Final step: the emailed code -> session. */
+  verifyCode: (challengeId: string, code: string) => Promise<RegisterResponse>;
   logout: () => void;
   sendVerification: (channel: VerifyChannel) => Promise<void>;
   confirmVerification: (channel: VerifyChannel, code: string) => Promise<void>;
@@ -174,16 +180,23 @@ export const useAppStore = create<AppState>()((set, get) => ({
 
   token: authStorage.getToken(),
   account: authStorage.getAccount(),
-  register: async (payload) => {
-    const res = await api<RegisterResponse>("/api/customer/register", {
+  authStart: (payload) =>
+    api<AuthStartResponse>("/api/customer/auth/start", { method: "POST", body: JSON.stringify(payload) }),
+  register: (payload) =>
+    api<AuthStartResponse>("/api/customer/register", { method: "POST", body: JSON.stringify(payload) }),
+  verifyCode: async (challengeId, code) => {
+    const res = await api<RegisterResponse>("/api/customer/auth/verify", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ challengeId, code }),
     });
     authStorage.save(res.customerToken, res.account);
     set({ token: res.customerToken, account: res.account });
     return res;
   },
   logout: () => {
+    // Ends the session server-side too (best-effort), not just locally.
+    const token = get().token;
+    if (token) void api<{ ok: boolean }>("/api/customer/auth/logout", { method: "POST", token }).catch(() => {});
     authStorage.clear();
     set({ token: "", account: null, myBookings: null });
   },

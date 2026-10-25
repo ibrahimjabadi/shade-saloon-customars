@@ -166,7 +166,17 @@ export interface RegisterPayload {
   marketingConsent: boolean;
 }
 
+/** Session issued by POST /api/customer/auth/verify (same shape the old
+ * one-step register used to return). */
 export interface RegisterResponse {
   customerToken: string;
   account: CustomerAccount;
+}
+
+/** POST /api/customer/auth/start and /api/customer/register (2026-10-25):
+ * no session yet -- a 6-digit code goes to the account's email first. */
+export interface AuthStartResponse {
+  status: "code_sent" | "need_email" | "new";
+  challengeId?: string;
+  sentTo?: string;
 }
