@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { validateEmail, validatePhone } from "../../utils/validators";
-import { resolveErrorMessage } from "../../api/client";
+import { api, ApiError, resolveErrorMessage } from "../../api/client";
 import { ConsentBlock } from "./ConsentBlock";
 import { OtpInput } from "./OtpInput";
 import { COUNTRY_DIAL_CODES, combinePhone } from "../../utils/countryDialCodes";
@@ -41,6 +41,11 @@ export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
   const [sentTo, setSentTo] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [canChangeEmail, setCanChangeEmail] = useState(false);
+  /** "Did you mean …?" -- from the live check on blur, or from the server
+   * when it refused a mistyped address (2026-10-27, bounce clean-up). */
+  const [emailSuggestion, setEmailSuggestion] = useState("");
+  const [emailWarning, setEmailWarning] = useState("");
 
   const nameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
@@ -55,12 +60,14 @@ export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
       await fn();
     } catch (err) {
       setMessage(resolveErrorMessage(err, tr));
+      if (err instanceof ApiError && err.suggestion) setEmailSuggestion(err.suggestion);
     } finally {
       setSubmitting(false);
     }
   }
   function handleStart(res: AuthStartResponse) {
     if (res.status === "code_sent") {
+      setCanChangeEmail(!!res.canChangeEmail);
       setChallengeId(res.challengeId || "");
       setSentTo(res.sentTo || "");
       setCode("");
@@ -131,10 +138,40 @@ export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
       </div>
     </label>
   );
+  async function checkEmailHint() {
+    const v = email.trim();
+    setEmailSuggestion("");
+    setEmailWarning("");
+    if (!v || !validateEmail(v)) return;
+    try {
+      const r = await api<{ ok: boolean; suggestion?: string | null; message?: string | null }>(`/api/email-check?email=${encodeURIComponent(v)}`);
+      if (r.suggestion) setEmailSuggestion(r.suggestion);
+      if (!r.ok && !r.suggestion) setEmailWarning(r.message || tr("errInvalidEmail"));
+    } catch {
+      /* hint only -- never block on it */
+    }
+  }
   const emailField = (
     <label>
       {tr("email")}
-      <input ref={emailRef} type="email" inputMode="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input
+        ref={emailRef}
+        type="email"
+        inputMode="email"
+        autoComplete="email"
+        value={email}
+        onChange={(e) => { setEmail(e.target.value); setEmailSuggestion(""); setEmailWarning(""); }}
+        onBlur={() => void checkEmailHint()}
+      />
+      {emailSuggestion && (
+        <span className="email-hint">
+          {tr("emailDidYouMean")}{" "}
+          <button type="button" className="link-btn" dir="ltr" onClick={() => { setEmail(emailSuggestion); setEmailSuggestion(""); setMessage(""); }}>
+            {emailSuggestion}
+          </button>
+        </span>
+      )}
+      {emailWarning && <span className="email-hint bad">{emailWarning}</span>}
     </label>
   );
   const changeNumber = (
@@ -158,7 +195,7 @@ export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
       {step === "email" && (
         <>
           {phoneField}
-          <p className="muted">{tr("authNeedEmail")}</p>
+          <p className="muted">{canChangeEmail ? tr("authFixEmail") : tr("authNeedEmail")}</p>
           {emailField}
           <button className="btn gold" disabled={submitting} onClick={submitEmail}>
             {submitting ? tr("loading") : tr("authSendCode")}
@@ -196,6 +233,11 @@ export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
           <button type="button" className="link-btn" disabled={submitting} onClick={resend}>
             {tr("authResend")}
           </button>
+          {canChangeEmail && (
+            <button type="button" className="link-btn" onClick={() => { setStep("email"); setMessage(""); }}>
+              {tr("authWrongEmail")}
+            </button>
+          )}
           {changeNumber}
         </>
       )}

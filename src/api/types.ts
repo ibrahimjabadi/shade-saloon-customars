@@ -179,4 +179,6 @@ export interface AuthStartResponse {
   status: "code_sent" | "need_email" | "new";
   challengeId?: string;
   sentTo?: string;
+  /** Account never confirmed a code yet -> the customer may correct the email. */
+  canChangeEmail?: boolean;
 }

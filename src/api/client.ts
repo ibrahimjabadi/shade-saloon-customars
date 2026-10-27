@@ -19,11 +19,15 @@ export class NetworkError extends Error {
 export class ApiError extends Error {
   serverMessage?: string;
   status: number;
-  constructor(status: number, serverMessage?: string) {
+  /** e.g. a corrected email ("a@gmail.com") when the backend refused a
+   * mistyped one ("a@gmial.com") -- shown as a one-tap fix. */
+  suggestion?: string;
+  constructor(status: number, serverMessage?: string, suggestion?: string) {
     super(serverMessage || "api_error");
     this.name = "ApiError";
     this.status = status;
     this.serverMessage = serverMessage;
+    this.suggestion = suggestion;
   }
 }
 
@@ -57,7 +61,11 @@ export async function api<T>(url: string, opt: ApiOptions = {}): Promise<T> {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new ApiError(res.status, typeof data?.error === "string" ? data.error : undefined);
+    throw new ApiError(
+      res.status,
+      typeof data?.error === "string" ? data.error : undefined,
+      typeof data?.suggestion === "string" ? data.suggestion : undefined
+    );
   }
   return data as T;
 }

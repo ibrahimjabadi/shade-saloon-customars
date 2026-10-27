@@ -452,3 +452,8 @@ input:invalid{border-color:var(--danger)}
    (AccountForm: resend code / change number). */
 .link-btn{background:none;border:0;padding:6px 0;font:inherit;font-size:13px;font-weight:700;color:var(--text-2,#5C5C63);text-decoration:underline;cursor:pointer;justify-self:start}
 .link-btn:disabled{opacity:.5;cursor:default}
+
+/* 2026-10-27: email typo hint under the sign-up/sign-in email field */
+.email-hint{display:block;font-size:12.5px;margin-top:6px;color:var(--text-2,#5C5C63);font-weight:600}
+.email-hint.bad{color:#DC2626}
+.email-hint .link-btn{padding:0;font-size:12.5px}
