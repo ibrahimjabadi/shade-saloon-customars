@@ -176,7 +176,11 @@ export interface RegisterResponse {
 /** POST /api/customer/auth/start and /api/customer/register (2026-10-25):
  * no session yet -- a 6-digit code goes to the account's email first. */
 export interface AuthStartResponse {
-  status: "code_sent" | "need_email" | "new";
+  /** "signed_in": a NEW account is signed in straight from sign-up
+   * (2026-10-28 -- no code; the email is checked server-side instead). */
+  status: "code_sent" | "need_email" | "new" | "signed_in";
+  customerToken?: string;
+  account?: CustomerAccount;
   challengeId?: string;
   sentTo?: string;
   /** Account never confirmed a code yet -> the customer may correct the email. */

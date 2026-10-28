@@ -90,17 +90,18 @@ export function AccountForm({ onRegistered }: { onRegistered?: () => void }) {
     if (!email.trim() || !validateEmail(email)) { setMessage(tr("errInvalidEmail")); emailRef.current?.focus(); return; }
     const s = settings || {};
     if (s.requireCustomerConsent !== false && !consent) { setMessage(tr("consentRequired")); return; }
-    void run(async () =>
-      handleStart(
-        await register({
-          name,
-          phone: fullPhone(),
-          email,
-          consent: s.requireCustomerConsent !== false ? consent : true,
-          marketingConsent: marketing,
-        })
-      )
-    );
+    void run(async () => {
+      const res = await register({
+        name,
+        phone: fullPhone(),
+        email,
+        consent: s.requireCustomerConsent !== false ? consent : true,
+        marketingConsent: marketing,
+      });
+      // New accounts are signed in straight away since 2026-10-28.
+      if (res.status === "signed_in") onRegistered?.();
+      else handleStart(res);
+    });
   }
   function submitCode() {
     if (code.length !== 6) { setMessage(tr("authCodeRequired")); return; }

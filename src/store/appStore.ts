@@ -182,8 +182,14 @@ export const useAppStore = create<AppState>()((set, get) => ({
   account: authStorage.getAccount(),
   authStart: (payload) =>
     api<AuthStartResponse>("/api/customer/auth/start", { method: "POST", body: JSON.stringify(payload) }),
-  register: (payload) =>
-    api<AuthStartResponse>("/api/customer/register", { method: "POST", body: JSON.stringify(payload) }),
+  register: async (payload) => {
+    const res = await api<AuthStartResponse>("/api/customer/register", { method: "POST", body: JSON.stringify(payload) });
+    if (res.status === "signed_in" && res.customerToken && res.account) {
+      authStorage.save(res.customerToken, res.account);
+      set({ token: res.customerToken, account: res.account });
+    }
+    return res;
+  },
   verifyCode: async (challengeId, code) => {
     const res = await api<RegisterResponse>("/api/customer/auth/verify", {
       method: "POST",
