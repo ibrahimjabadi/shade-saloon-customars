@@ -46,6 +46,7 @@ export function HomeVisitWizard() {
           {state.quote?.ok && (
             <p className="muted" style={{ marginTop: 8 }}>
               {tr("travelFeeLabel")}: <strong>{formatMoney(state.quote.fee || 0, currency, lang)}</strong> · {state.quote.distanceKm} {tr("kmFromBranch")}
+              {wizard.config?.perKmFee ? ` (${formatMoney(wizard.config.perKmFee, currency, lang)} ${tr("perKm")})` : ""}
             </p>
           )}
           {state.quote && !state.quote.ok && (

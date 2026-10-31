@@ -6,10 +6,12 @@ import type { HomeVisitWizard } from "../useHomeVisitWizard";
 
 export function HVServicesStep({ wizard }: { wizard: HomeVisitWizard }) {
   const { tr, lang } = useTranslation();
-  const services = useAppStore((s) => s.services);
   const currency = useAppStore((s) => s.settings?.currency);
+  const services = wizard.homeServices;
 
-  if (!services.length) return <p className="muted">{tr("noServices")}</p>;
+  if (wizard.configError) return <p className="muted" style={{ color: "var(--danger)" }}>{wizard.configError}</p>;
+  if (!wizard.config) return <p className="muted">{tr("loading")}</p>;
+  if (!wizard.config.enabled || !services.length) return <p className="muted">{tr("homeVisitUnavailable")}</p>;
 
   return (
     <div className="grid">

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { PickedLocation } from "./AddressPicker";
-import type { Booking, Slot } from "../../api/types";
+import type { Booking, Service, Slot } from "../../api/types";
 import { api, resolveErrorMessage, ApiError } from "../../api/client";
 import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
@@ -14,6 +14,15 @@ export interface HomeVisitQuote {
   fee?: number;
   distanceKm?: number;
   error?: string;
+}
+
+/** GET /api/home-visit/config: services have their own home prices; one
+ * without a home price isn't offered at home. */
+interface HomeVisitConfig {
+  enabled: boolean;
+  perKmFee: number;
+  maxKm: number;
+  servicePrices: Record<string, number>;
 }
 
 export interface HomeVisitState {
@@ -65,6 +74,25 @@ export function useHomeVisitWizard() {
   const account = useAppStore((s) => s.account);
   const branchId = useAppStore((s) => s.branchId);
   const token = useAppStore((s) => s.token);
+  const services = useAppStore((s) => s.services);
+  const [config, setConfig] = useState<HomeVisitConfig | null>(null);
+  const [configError, setConfigError] = useState<string | null>(null);
+
+  useEffect(() => {
+    api<HomeVisitConfig>("/api/home-visit/config")
+      .then(setConfig)
+      .catch((err) => setConfigError(resolveErrorMessage(err, tr)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // The services offered at home, each at its home price.
+  const homeServices: Service[] = useMemo(
+    () =>
+      config
+        ? services.filter((s) => config.servicePrices[s.id] != null).map((s) => ({ ...s, price: config.servicePrices[s.id] }))
+        : [],
+    [services, config],
+  );
 
   function stepsList() {
     return account
@@ -174,6 +202,9 @@ export function useHomeVisitWizard() {
 
   return {
     state,
+    config,
+    configError,
+    homeServices,
     stepsList,
     setLocation,
     toggleService,

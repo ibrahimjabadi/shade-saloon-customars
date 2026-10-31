@@ -7,12 +7,11 @@ import type { HomeVisitWizard } from "../useHomeVisitWizard";
 
 export function HVConfirmStep({ wizard }: { wizard: HomeVisitWizard }) {
   const { tr, lang } = useTranslation();
-  const services = useAppStore((s) => s.services);
   const barber = useAppStore((s) => s.barbers.find((b) => b.id === wizard.state.barberId));
   const currency = useAppStore((s) => s.settings?.currency);
   const { state } = wizard;
 
-  const selected = resolveSelectedServices(services, state.selectedServices);
+  const selected = resolveSelectedServices(wizard.homeServices, state.selectedServices);
   const servicesTotal = totalPrice(selected);
   const travelFee = state.quote?.fee || 0;
   const estimatedTotal = servicesTotal + travelFee;
