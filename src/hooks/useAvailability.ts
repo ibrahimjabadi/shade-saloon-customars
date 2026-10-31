@@ -8,6 +8,9 @@ export interface AvailabilityParams {
   barberId: string;
   serviceIds: string[];
   branchId: string;
+  // Home visits: only times that also leave room for the barber's trip
+  // there and back (server adds its travel buffer).
+  homeVisit?: boolean;
   // Bump this (e.g. a counter) to force a refetch even when nothing else
   // changed -- needed by callers that stay mounted across a failed booking
   // attempt (RescheduleOverlay), unlike TimeStep/HVTimeStep which naturally
@@ -52,6 +55,7 @@ export function useAvailability(params: AvailabilityParams | null): Availability
       barberId: params.barberId,
       serviceIds: params.serviceIds.join(","),
       branchId: params.branchId,
+      ...(params.homeVisit ? { homeVisit: "1" } : {}),
     }).toString();
 
     // isBackgroundRefresh skips the loading state (and its skeleton) --

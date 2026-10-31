@@ -18,6 +18,7 @@ export function HVTimeStep({ wizard }: { wizard: HomeVisitWizard }) {
     barberId: state.barberId,
     serviceIds: state.selectedServices,
     branchId,
+    homeVisit: true,
   });
 
   // See TimeStep's identical effect: useAvailability polls in the

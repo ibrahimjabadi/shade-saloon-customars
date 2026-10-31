@@ -2,7 +2,6 @@ import { useAppStore } from "../../../store/appStore";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { resolveSelectedServices, serviceName, totalPrice } from "../../../utils/booking";
 import { formatMoney } from "../../../utils/money";
-import { PROVISIONAL_TRAVEL_FEE } from "../constants";
 import { formatSlotTime } from "../../../utils/businessHours";
 import type { HomeVisitWizard } from "../useHomeVisitWizard";
 
@@ -15,7 +14,8 @@ export function HVConfirmStep({ wizard }: { wizard: HomeVisitWizard }) {
 
   const selected = resolveSelectedServices(services, state.selectedServices);
   const servicesTotal = totalPrice(selected);
-  const estimatedTotal = servicesTotal + PROVISIONAL_TRAVEL_FEE;
+  const travelFee = state.quote?.fee || 0;
+  const estimatedTotal = servicesTotal + travelFee;
 
   return (
     <div className="card">
@@ -36,7 +36,7 @@ export function HVConfirmStep({ wizard }: { wizard: HomeVisitWizard }) {
       </div>
       <div className="muted" style={{ marginTop: 4, display: "flex", justifyContent: "space-between" }}>
         <span>{tr("travelFeeLabel")}</span>
-        <span>{formatMoney(PROVISIONAL_TRAVEL_FEE, currency, lang)}</span>
+        <span>{formatMoney(travelFee, currency, lang)}</span>
       </div>
       <h2 style={{ marginTop: 10, display: "flex", justifyContent: "space-between" }}>
         <span>{tr("total")}</span>

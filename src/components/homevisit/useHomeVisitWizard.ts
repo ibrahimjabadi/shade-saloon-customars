@@ -5,7 +5,16 @@ import { api, resolveErrorMessage, ApiError } from "../../api/client";
 import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { formatMoney } from "../../utils/money";
-import { PROVISIONAL_TRAVEL_FEE } from "./constants";
+
+/** GET /api/home-visit/quote: the trip fee for this address, from the
+ * distance tiers the salon sets in Settings (the server recomputes it on
+ * booking, so this is only for showing the customer). */
+export interface HomeVisitQuote {
+  ok: boolean;
+  fee?: number;
+  distanceKm?: number;
+  error?: string;
+}
 
 export interface HomeVisitState {
   step: number;
@@ -14,6 +23,8 @@ export interface HomeVisitState {
   barberId: string;
   date: string;
   slot: Slot | null;
+  quote: HomeVisitQuote | null;
+  quoteLoading: boolean;
   submitting: boolean;
   error: string | null;
   success: Booking | null;
@@ -34,6 +45,8 @@ function initialState(): HomeVisitState {
     barberId: "",
     date: new Date().toISOString().slice(0, 10),
     slot: null,
+    quote: null,
+    quoteLoading: false,
     submitting: false,
     error: null,
     success: null,
@@ -60,7 +73,11 @@ export function useHomeVisitWizard() {
   }
 
   function setLocation(location: PickedLocation) {
-    setState((s) => ({ ...s, location }));
+    setState((s) => ({ ...s, location, quote: null, quoteLoading: true }));
+    const qs = new URLSearchParams({ branchId, lat: String(location.lat), lng: String(location.lng) }).toString();
+    api<HomeVisitQuote>(`/api/home-visit/quote?${qs}`)
+      .then((quote) => setState((s) => (s.location === location ? { ...s, quote, quoteLoading: false } : s)))
+      .catch((err) => setState((s) => (s.location === location ? { ...s, quote: { ok: false, error: resolveErrorMessage(err, tr) }, quoteLoading: false } : s)));
   }
   function toggleService(id: string) {
     setState((s) => {
@@ -86,7 +103,7 @@ export function useHomeVisitWizard() {
   }
 
   function canAdvance(): boolean {
-    if (state.step === STEP_ADDRESS) return !!state.location;
+    if (state.step === STEP_ADDRESS) return !!state.location && !!state.quote?.ok;
     if (state.step === STEP_SERVICES) return state.selectedServices.length > 0;
     if (state.step === STEP_BARBER) return !!state.barberId;
     if (state.step === STEP_TIME) return !!state.slot;
@@ -105,14 +122,10 @@ export function useHomeVisitWizard() {
     if (pos > 0) setState((s) => ({ ...s, step: list[pos - 1] }));
   }
 
-  /** Bridges this booking through the existing /api/customer/bookings
-   * endpoint (same one the in-branch wizard uses) rather than waiting for a
-   * dedicated home-visit endpoint: the address and estimated travel fee are
-   * written into the `notes` field the endpoint already accepts, so branch
-   * staff reading the booking's notes see exactly where to go. This makes
-   * the booking real today (same status/cancel/reschedule handling as any
-   * other), at the cost of relying on staff actually reading notes and not
-   * charging the travel fee through any real payment/total field. */
+  /** Books through /api/customer/bookings with a `homeVisit` object: the
+   * server prices the trip itself, adds it to the booking total, shows the
+   * booking as a home visit to staff and keeps the trip time free. The
+   * address also goes into notes as a readable fallback. */
   async function submit() {
     if (state.submitting || !state.slot || !state.location) return;
     setState((s) => ({ ...s, submitting: true, error: null }));
@@ -121,7 +134,7 @@ export function useHomeVisitWizard() {
       tr("homeVisitNotesPrefix"),
       `${tr("addressLabel")}: ${addressLine}`,
       `${tr("coordinatesLabel")}: ${state.location.lat}, ${state.location.lng}`,
-      `${tr("travelFeeLabel")}: ${formatMoney(PROVISIONAL_TRAVEL_FEE, undefined, lang)}`,
+      `${tr("travelFeeLabel")}: ${formatMoney(state.quote?.fee || 0, undefined, lang)}`,
     ].join("\n");
     try {
       const res = await api<Booking>("/api/customer/bookings", {
@@ -133,6 +146,7 @@ export function useHomeVisitWizard() {
           serviceIds: state.selectedServices,
           start: state.slot.start,
           notes,
+          homeVisit: { lat: state.location.lat, lng: state.location.lng, address: addressLine },
         }),
       });
       setState((s) => ({ ...s, submitting: false, success: res }));

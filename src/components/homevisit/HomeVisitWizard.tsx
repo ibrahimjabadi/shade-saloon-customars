@@ -1,4 +1,6 @@
 import { useTranslation } from "../../hooks/useTranslation";
+import { useAppStore } from "../../store/appStore";
+import { formatMoney } from "../../utils/money";
 import { AddressPicker } from "./AddressPicker";
 import { HVServicesStep } from "./steps/HVServicesStep";
 import { HVBarberStep } from "./steps/HVBarberStep";
@@ -9,7 +11,8 @@ import { SuccessScreen } from "../booking/SuccessScreen";
 import { useHomeVisitWizard } from "./useHomeVisitWizard";
 
 export function HomeVisitWizard() {
-  const { tr } = useTranslation();
+  const { tr, lang } = useTranslation();
+  const currency = useAppStore((s) => s.settings?.currency);
   const wizard = useHomeVisitWizard();
   const { state } = wizard;
 
@@ -36,7 +39,20 @@ export function HomeVisitWizard() {
         ))}
       </div>
 
-      {state.step === wizard.STEP_ADDRESS && <AddressPicker value={state.location} onChange={wizard.setLocation} />}
+      {state.step === wizard.STEP_ADDRESS && (
+        <>
+          <AddressPicker value={state.location} onChange={wizard.setLocation} />
+          {state.quoteLoading && <p className="muted" style={{ marginTop: 8 }}>{tr("loading")}</p>}
+          {state.quote?.ok && (
+            <p className="muted" style={{ marginTop: 8 }}>
+              {tr("travelFeeLabel")}: <strong>{formatMoney(state.quote.fee || 0, currency, lang)}</strong> · {state.quote.distanceKm} {tr("kmFromBranch")}
+            </p>
+          )}
+          {state.quote && !state.quote.ok && (
+            <p className="muted" style={{ marginTop: 8, color: "var(--danger)" }}>{state.quote.error || tr("errGeneric")}</p>
+          )}
+        </>
+      )}
       {state.step === wizard.STEP_SERVICES && <HVServicesStep wizard={wizard} />}
       {state.step === wizard.STEP_BARBER && <HVBarberStep wizard={wizard} />}
       {state.step === wizard.STEP_TIME && <HVTimeStep wizard={wizard} />}
