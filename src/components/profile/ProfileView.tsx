@@ -3,7 +3,7 @@ import { useAppStore } from "../../store/appStore";
 import { useTranslation } from "../../hooks/useTranslation";
 import { AccountForm } from "./AccountForm";
 import { VerifyAccountBanner } from "./VerifyAccountBanner";
-import { IconBuilding, IconCalendar, IconLogout, IconShield, IconGlobe, IconStar } from "../shell/icons";
+import { IconBuilding, IconCalendar, IconLogout, IconShield, IconGlobe } from "../shell/icons";
 
 /** Real policy/terms text (same fields ConsentBlock already shows at
  * registration), just reachable again later from Profile -- reuses fetched
@@ -63,7 +63,9 @@ function SettingsList({ onTogglePrivacy }: { onTogglePrivacy: () => void }) {
   const rows: { icon: typeof IconCalendar; label: string; onClick: () => void; danger?: boolean }[] = [
     { icon: IconCalendar, label: tr("myBookings"), onClick: () => setTab("bookings") },
     { icon: IconBuilding, label: tr("branchesTab"), onClick: () => setTab("branches") },
-    { icon: IconStar, label: tr("pointsTab"), onClick: () => setTab("points") },
+    // "Points" hidden (2026-11-02 audit): there's no points system behind it
+    // yet, so it only ever showed "coming soon". PointsView stays for when
+    // one exists.
     { icon: IconShield, label: tr("privacyPolicy"), onClick: onTogglePrivacy },
     { icon: IconGlobe, label: `${tr("languageRow")} — ${lang === "ar" ? "EN" : "عربي"}`, onClick: toggleLang },
     { icon: IconLogout, label: tr("logout"), onClick: logout, danger: true },
