@@ -5,6 +5,8 @@
 // Power Mode blocks autoplay) or is slow to load. Plain script so it shows
 // before the React app has loaded.
 (function () {
+  // next to this script (js/ -> app root), so it also works from deep links like /barber/<id>
+  var video = new URL("../intro.mp4", document.currentScript ? document.currentScript.src : location.href).href;
   // phones only, not the website on a computer (or a tablet). The preview
   // page's phone frames ask for it with ?platform=ios|android.
   var forced = new URLSearchParams(location.search).get("platform");
@@ -25,7 +27,7 @@
     "@media (min-aspect-ratio:3/4){#shadiIntro video{object-fit:contain}}" +
     "#shadiIntro span{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));inset-inline-end:20px;font:600 12px Cairo,sans-serif;color:rgba(255,255,255,.45);letter-spacing:.02em}" +
     "</style>" +
-    '<video src="intro.mp4" playsinline webkit-playsinline preload="auto"></video><span>اضغط للتخطي</span>';
+    '<video src="' + video + '" playsinline webkit-playsinline preload="auto"></video><span>اضغط للتخطي</span>';
   document.body.insertBefore(o, document.body.firstChild);
 
   var v = o.querySelector("video");

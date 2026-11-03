@@ -48,8 +48,8 @@ export function App() {
       {offline && <div className="offline">{t("offline")}</div>}
       <header className={`top ${scrolled ? "scrolled" : ""}`}>
         <button className="brand" onClick={() => nav("home")} aria-label="SHADI SALOON">
-          <img className="logo" src="assets/mark.png" alt="" />
-          <img className="word" src="assets/wordmark.png" alt="SHADI SALOON" />
+          <img className="logo" src={`${import.meta.env.BASE_URL}assets/mark.png`} alt="" />
+          <img className="word" src={`${import.meta.env.BASE_URL}assets/wordmark.png`} alt="SHADI SALOON" />
         </button>
         <nav className="nav">{tabBar}</nav>
         <div className="grow" />
