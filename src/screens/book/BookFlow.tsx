@@ -238,10 +238,10 @@ export function TimePicker({ date, setDate, slots, slot, setSlot, err, showBarbe
   const h = (x: BarberSlot) => new Date(x.start).getHours();
   const late = (x: BarberSlot) => localDate(new Date(x.start)) !== date;
   const parts: [string, BarberSlot[]][] = [
-    [lang === "ar" ? "الصبح" : "Morning", slots.slots.filter((x) => !late(x) && h(x) < 12)],
+    [lang === "ar" ? "الصباح" : "Morning", slots.slots.filter((x) => !late(x) && h(x) < 12)],
     [lang === "ar" ? "الظهر" : "Afternoon", slots.slots.filter((x) => !late(x) && h(x) >= 12 && h(x) < 17)],
-    [lang === "ar" ? "المسا" : "Evening", slots.slots.filter((x) => !late(x) && h(x) >= 17)],
-    [lang === "ar" ? "بعد نص الليل" : "After midnight", slots.slots.filter(late)],
+    [lang === "ar" ? "المساء" : "Evening", slots.slots.filter((x) => !late(x) && h(x) >= 17)],
+    [lang === "ar" ? "بعد منتصف الليل" : "After midnight", slots.slots.filter(late)],
   ];
   return (
     <>

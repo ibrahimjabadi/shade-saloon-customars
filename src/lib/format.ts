@@ -45,7 +45,7 @@ export function monthLabel(date: string, lang: Lang) {
 export function whenLabel(iso: string, lang: Lang) {
   const d = localDate(new Date(iso));
   const today = localDate();
-  const rel = d === today ? (lang === "ar" ? "اليوم" : "Today") : d === addDays(today, 1) ? (lang === "ar" ? "بكرة" : "Tomorrow") : dayLabel(d, lang);
+  const rel = d === today ? (lang === "ar" ? "اليوم" : "Today") : d === addDays(today, 1) ? (lang === "ar" ? "غدًا" : "Tomorrow") : dayLabel(d, lang);
   return `${rel} · ${timeLabel(iso, lang)}`;
 }
 export function initial(name?: string) {

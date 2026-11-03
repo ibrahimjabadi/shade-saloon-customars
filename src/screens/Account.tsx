@@ -8,7 +8,7 @@ import type { Account as Acc, Loyalty, Offer } from "../lib/types";
 import { errText, useApp, useT } from "../store/app";
 import { BranchPicker } from "./Home";
 
-const CAT_AR: Record<string, string> = { VIP: "VIP", Regular: "زبون دائم", "New Customer": "زبون جديد", Inactive: "زبون منقطع" };
+const CAT_AR: Record<string, string> = { VIP: "VIP", Regular: "عميل دائم", "New Customer": "عميل جديد", Inactive: "عميل منقطع" };
 const CAT_EN: Record<string, string> = { Regular: "Regular", "New Customer": "New", Inactive: "Inactive", VIP: "VIP" };
 
 type Panel = null | "edit" | "branches" | "privacy" | "offers";
