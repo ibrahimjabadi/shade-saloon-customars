@@ -24,11 +24,16 @@ export function money(v: number | undefined | null, currency: string | undefined
 }
 export function timeLabel(iso: string | Date, lang: Lang) {
   const d = typeof iso === "string" ? new Date(iso) : iso;
-  const h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0");
+  const h = d.getHours(),
+    m = String(d.getMinutes()).padStart(2, "0");
   const ampm = lang === "ar" ? (h >= 12 ? "م" : "ص") : h >= 12 ? "PM" : "AM";
   return `${((h + 11) % 12) + 1}:${m} ${ampm}`;
 }
-export function dayLabel(date: string | Date, lang: Lang, opts: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric", month: "long" }) {
+export function dayLabel(
+  date: string | Date,
+  lang: Lang,
+  opts: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric", month: "long" },
+) {
   const d = typeof date === "string" ? new Date(date.length === 10 ? `${date}T12:00:00` : date) : date;
   return d.toLocaleDateString(loc(lang), { ...opts, calendar: "gregory" });
 }
@@ -45,7 +50,16 @@ export function monthLabel(date: string, lang: Lang) {
 export function whenLabel(iso: string, lang: Lang) {
   const d = localDate(new Date(iso));
   const today = localDate();
-  const rel = d === today ? (lang === "ar" ? "اليوم" : "Today") : d === addDays(today, 1) ? (lang === "ar" ? "غدًا" : "Tomorrow") : dayLabel(d, lang);
+  const rel =
+    d === today
+      ? lang === "ar"
+        ? "اليوم"
+        : "Today"
+      : d === addDays(today, 1)
+        ? lang === "ar"
+          ? "غدًا"
+          : "Tomorrow"
+        : dayLabel(d, lang);
   return `${rel} · ${timeLabel(iso, lang)}`;
 }
 export function initial(name?: string) {
@@ -53,5 +67,11 @@ export function initial(name?: string) {
 }
 /** A short, readable booking reference instead of the internal id. */
 export function bookingRef(id: string) {
-  return "#" + id.replace(/[^a-z0-9]/gi, "").slice(-6).toUpperCase();
+  return (
+    "#" +
+    id
+      .replace(/[^a-z0-9]/gi, "")
+      .slice(-6)
+      .toUpperCase()
+  );
 }

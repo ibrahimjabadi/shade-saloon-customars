@@ -4,50 +4,184 @@
    Android -- Material 3: navigation bar with a pill behind the active icon,
               a rounded-square FAB for "book", pill buttons, 28px sheets,
               tonal chips. */
-@media (max-width:899px){
-  [data-platform="ios"] body{font-family:-apple-system,BlinkMacSystemFont,"SF Arabic","SF Pro Text",Cairo,system-ui,sans-serif;letter-spacing:-.01em}
-  [data-platform="ios"] .num{font-family:-apple-system,"SF Pro Text",Manrope,sans-serif}
-  [data-platform="ios"] .top{border-bottom-width:.5px}
-  [data-platform="ios"] .tabbar{border-top-width:.5px;padding-top:4px}
-  [data-platform="ios"] .tabbar button .ic{width:auto;height:28px}
-  [data-platform="ios"] .tabbar .book .ic{width:50px;height:50px}
-  [data-platform="ios"] .page-head h1,[data-platform="ios"] .hello h1{font-size:32px;letter-spacing:-.02em}
-  [data-platform="ios"] .sheet{border-radius:12px 12px 0 0}
-  [data-platform="ios"] .sh h2{font-size:17px;text-align:center}
-  [data-platform="ios"] .seg{border:0;background:rgba(118,118,128,.24);border-radius:9px;padding:2px}
-  [data-platform="ios"] .seg button{height:32px;border-radius:7px}
-  [data-platform="ios"] .seg button.on{background:#636366;color:#fff}
-  [data-theme="light"][data-platform="ios"] .seg{background:rgba(118,118,128,.12)}
-  [data-theme="light"][data-platform="ios"] .seg button.on{background:#fff;color:var(--text)}
-  [data-platform="ios"] .group,[data-platform="ios"] .bk,[data-platform="ios"] .card{border-radius:14px}
-  [data-platform="ios"] .list-row{border-bottom-width:.5px}
-  [data-platform="ios"] .btn{border-radius:12px}
-  [data-platform="ios"] .field{border-radius:12px;background:var(--surface-2);border-color:transparent}
+@media (max-width: 899px) {
+  [data-platform="ios"] body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Arabic", "SF Pro Text", Cairo, system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  [data-platform="ios"] .num {
+    font-family: -apple-system, "SF Pro Text", Manrope, sans-serif;
+  }
+  [data-platform="ios"] .top {
+    border-bottom-width: 0.5px;
+  }
+  [data-platform="ios"] .tabbar {
+    border-top-width: 0.5px;
+    padding-top: 4px;
+  }
+  [data-platform="ios"] .tabbar button .ic {
+    width: auto;
+    height: 28px;
+  }
+  [data-platform="ios"] .tabbar .book .ic {
+    width: 50px;
+    height: 50px;
+  }
+  [data-platform="ios"] .page-head h1,
+  [data-platform="ios"] .hello h1 {
+    font-size: 32px;
+    letter-spacing: -0.02em;
+  }
+  [data-platform="ios"] .sheet {
+    border-radius: 12px 12px 0 0;
+  }
+  [data-platform="ios"] .sh h2 {
+    font-size: 17px;
+    text-align: center;
+  }
+  [data-platform="ios"] .seg {
+    border: 0;
+    background: rgba(118, 118, 128, 0.24);
+    border-radius: 9px;
+    padding: 2px;
+  }
+  [data-platform="ios"] .seg button {
+    height: 32px;
+    border-radius: 7px;
+  }
+  [data-platform="ios"] .seg button.on {
+    background: #636366;
+    color: #fff;
+  }
+  [data-theme="light"][data-platform="ios"] .seg {
+    background: rgba(118, 118, 128, 0.12);
+  }
+  [data-theme="light"][data-platform="ios"] .seg button.on {
+    background: #fff;
+    color: var(--text);
+  }
+  [data-platform="ios"] .group,
+  [data-platform="ios"] .bk,
+  [data-platform="ios"] .card {
+    border-radius: 14px;
+  }
+  [data-platform="ios"] .list-row {
+    border-bottom-width: 0.5px;
+  }
+  [data-platform="ios"] .btn {
+    border-radius: 12px;
+  }
+  [data-platform="ios"] .field {
+    border-radius: 12px;
+    background: var(--surface-2);
+    border-color: transparent;
+  }
 
-  [data-platform="android"] .top{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}
-  [data-platform="android"] .tabbar{background:var(--surface);border-top:0;box-shadow:0 -1px 0 var(--line);padding-top:10px}
-  [data-platform="android"] .tabbar button{gap:4px;font-size:12px}
-  [data-platform="android"] .tabbar button .ic{width:64px;height:32px;border-radius:16px}
-  [data-platform="android"] .tabbar button.on .ic{background:var(--gold-soft)}
-  [data-platform="android"] .tabbar .book .ic{width:56px;height:56px;border-radius:18px;margin-top:-26px;box-shadow:0 6px 14px rgba(0,0,0,.35),0 0 0 4px var(--surface)}
-  [data-platform="android"] .btn{border-radius:24px}
-  [data-platform="android"] .btn.sq{border-radius:50%}
-  [data-platform="android"] .sheet{border-radius:28px 28px 0 0}
-  [data-platform="android"] .grab{width:32px;height:4px;margin-top:14px}
-  [data-platform="android"] .chips button{border-radius:8px}
-  [data-platform="android"] .seg{border-radius:20px;padding:0;overflow:hidden;border-color:var(--line-2)}
-  [data-platform="android"] .seg button{border-radius:0;height:40px}
-  [data-platform="android"] .seg button.on{background:var(--gold-soft);color:var(--gold-text);box-shadow:none}
-  [data-platform="android"] .field{border-radius:4px 4px 0 0;border:0;border-bottom:1px solid var(--line-2);background:var(--surface-2)}
-  [data-platform="android"] .field:focus-within{box-shadow:none;border-bottom:2px solid var(--gold)}
-  [data-platform="android"] .bk,[data-platform="android"] .group,[data-platform="android"] .card{border-radius:16px;border-color:transparent;background:var(--surface-2)}
-  [data-platform="android"] .toast{border-radius:4px;background:#2E2C29;color:#F3EFE6;border:0;inset-inline:12px;left:12px;right:12px;transform:translateY(20px);justify-content:flex-start;max-width:none}
-  [data-platform="android"] .toast.on{transform:none}
+  [data-platform="android"] .top {
+    background: var(--bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  [data-platform="android"] .tabbar {
+    background: var(--surface);
+    border-top: 0;
+    box-shadow: 0 -1px 0 var(--line);
+    padding-top: 10px;
+  }
+  [data-platform="android"] .tabbar button {
+    gap: 4px;
+    font-size: 12px;
+  }
+  [data-platform="android"] .tabbar button .ic {
+    width: 64px;
+    height: 32px;
+    border-radius: 16px;
+  }
+  [data-platform="android"] .tabbar button.on .ic {
+    background: var(--gold-soft);
+  }
+  [data-platform="android"] .tabbar .book .ic {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    margin-top: -26px;
+    box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.35),
+      0 0 0 4px var(--surface);
+  }
+  [data-platform="android"] .btn {
+    border-radius: 24px;
+  }
+  [data-platform="android"] .btn.sq {
+    border-radius: 50%;
+  }
+  [data-platform="android"] .sheet {
+    border-radius: 28px 28px 0 0;
+  }
+  [data-platform="android"] .grab {
+    width: 32px;
+    height: 4px;
+    margin-top: 14px;
+  }
+  [data-platform="android"] .chips button {
+    border-radius: 8px;
+  }
+  [data-platform="android"] .seg {
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    border-color: var(--line-2);
+  }
+  [data-platform="android"] .seg button {
+    border-radius: 0;
+    height: 40px;
+  }
+  [data-platform="android"] .seg button.on {
+    background: var(--gold-soft);
+    color: var(--gold-text);
+    box-shadow: none;
+  }
+  [data-platform="android"] .field {
+    border-radius: 4px 4px 0 0;
+    border: 0;
+    border-bottom: 1px solid var(--line-2);
+    background: var(--surface-2);
+  }
+  [data-platform="android"] .field:focus-within {
+    box-shadow: none;
+    border-bottom: 2px solid var(--gold);
+  }
+  [data-platform="android"] .bk,
+  [data-platform="android"] .group,
+  [data-platform="android"] .card {
+    border-radius: 16px;
+    border-color: transparent;
+    background: var(--surface-2);
+  }
+  [data-platform="android"] .toast {
+    border-radius: 4px;
+    background: #2e2c29;
+    color: #f3efe6;
+    border: 0;
+    inset-inline: 12px;
+    left: 12px;
+    right: 12px;
+    transform: translateY(20px);
+    justify-content: flex-start;
+    max-width: none;
+  }
+  [data-platform="android"] .toast.on {
+    transform: none;
+  }
 }
 
 /* Phones and tablets: iOS zooms the whole page into any field whose text is
    under 16px when it is tapped, so every field is at least 16px on touch
    screens (beats inline sizes too). Desktop keeps the tighter sizes. */
-@media (hover:none) and (pointer:coarse){
-  input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:16px !important}
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }

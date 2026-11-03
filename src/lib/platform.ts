@@ -22,5 +22,9 @@ export function initPlatform(): Platform {
 
 /** Short tap feedback on phones that support it (Android). */
 export function haptic() {
-  try { navigator.vibrate?.(8); } catch { /* not supported */ }
+  try {
+    navigator.vibrate?.(8);
+  } catch {
+    /* not supported */
+  }
 }

@@ -5,19 +5,27 @@
 // get its own message. A 401 on a signed-in request means the session is
 // gone: the app signs out locally.
 declare global {
-  interface Window { SHADI_API_BASE?: string }
+  interface Window {
+    SHADI_API_BASE?: string;
+  }
 }
 
 const BASE = (typeof window !== "undefined" && window.SHADI_API_BASE) || "";
 const TOKEN_KEY = "shadi.c.token";
 
 export class ApiError extends Error {
-  constructor(message: string, public status: number, public suggestion?: string) {
+  constructor(
+    message: string,
+    public status: number,
+    public suggestion?: string,
+  ) {
     super(message);
   }
 }
 export class NetworkError extends Error {
-  constructor() { super("network"); }
+  constructor() {
+    super("network");
+  }
 }
 
 let token = localStorage.getItem(TOKEN_KEY) || "";
@@ -39,7 +47,10 @@ export function media(url?: string | null) {
   return /^(https?:|data:|blob:)/.test(url) ? url : BASE + url;
 }
 
-export async function api<T>(path: string, opts: { method?: string; body?: unknown; signal?: AbortSignal } = {}): Promise<T> {
+export async function api<T>(
+  path: string,
+  opts: { method?: string; body?: unknown; signal?: AbortSignal } = {},
+): Promise<T> {
   let res: Response;
   try {
     res = await fetch(BASE + path, {
@@ -54,6 +65,11 @@ export async function api<T>(path: string, opts: { method?: string; body?: unkno
   }
   const data = await res.json().catch(() => ({}));
   if (res.status === 401 && token) onUnauthorized();
-  if (!res.ok) throw new ApiError(typeof data?.error === "string" ? data.error : "", res.status, typeof data?.suggestion === "string" ? data.suggestion : undefined);
+  if (!res.ok)
+    throw new ApiError(
+      typeof data?.error === "string" ? data.error : "",
+      res.status,
+      typeof data?.suggestion === "string" ? data.suggestion : undefined,
+    );
   return data as T;
 }
