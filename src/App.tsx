@@ -1,111 +1,88 @@
-import { useEffect, type ReactNode } from "react";
-import { useAppStore } from "./store/appStore";
-import { useGlobalOverlayEffects } from "./hooks/useGlobalOverlayEffects";
-import { Topbar } from "./components/shell/Topbar";
-import { TabBar } from "./components/shell/TabBar";
-import { OfflineBanner } from "./components/shell/OfflineBanner";
-import { SkeletonHome } from "./components/shell/Skeletons";
-import { ConfigErrorScreen } from "./components/ConfigErrorScreen";
-import { HomeView } from "./components/home/HomeView";
-import { BookingsView } from "./components/bookings/BookingsView";
-import { ProfileView } from "./components/profile/ProfileView";
-import { BranchesView } from "./components/branches/BranchesView";
-import { PointsView } from "./components/points/PointsView";
-import { ExploreView } from "./components/explore/ExploreView";
-import { BookingOverlay } from "./components/booking/BookingOverlay";
-import { RescheduleOverlay } from "./components/bookings/RescheduleOverlay";
-import { ReviewOverlay } from "./components/bookings/ReviewOverlay";
-import { HomeVisitOverlay } from "./components/homevisit/HomeVisitOverlay";
-import { displayError } from "./utils/errorDisplay";
-import { useTranslation } from "./hooks/useTranslation";
+import { useEffect, useState } from "react";
+import { Icon } from "./components/Icon";
+import { Empty, Loading, Toast } from "./components/ui";
+import { haptic } from "./lib/platform";
+import { useApp, useT, type Tab } from "./store/app";
+import { Account } from "./screens/Account";
+import { BookFlow } from "./screens/book/BookFlow";
+import { Bookings, Reschedule, Review } from "./screens/Bookings";
+import { Explore } from "./screens/Explore";
+import { Home } from "./screens/Home";
+import { Notifications } from "./screens/Notifications";
 
-// Applies an admin-configured accent color at runtime (Settings > Customer
-// portal). Derives the same --accent-soft/--shadow-gold tones global.css
-// otherwise hardcodes, plus flips --accent-ink dark if the chosen color is
-// too light for white button text to stay readable on top of it.
-function applyPortalAccentColor(hex?: string) {
-  if (!hex || !/^#[0-9a-f]{6}$/i.test(hex)) return;
-  const root = document.documentElement.style;
-  root.setProperty("--accent", hex);
-  const m = /^#([0-9a-f]{6})$/i.exec(hex)!;
-  const num = parseInt(m[1], 16);
-  const r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
-  root.setProperty("--accent-soft", `rgba(${r},${g},${b},.10)`);
-  root.setProperty("--shadow-gold", `0 6px 16px rgba(${r},${g},${b},.20)`);
-  // Accent-ink (text drawn on top of the accent, e.g. the gold/book button
-  // label) needs to flip to dark if the admin picks a light accent color —
-  // a fixed white would go unreadable on e.g. a pale/yellow accent.
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  root.setProperty("--accent-ink", luminance > 0.6 ? "#171717" : "#FFFFFF");
-}
+const TABS: [Tab, string, "tabHome" | "tabBook" | "tabBookings" | "tabExplore" | "tabAccount"][] = [
+  ["home", "house", "tabHome"], ["bookings", "list", "tabBookings"], ["book", "plus", "tabBook"], ["explore", "compass", "tabExplore"], ["account", "user", "tabAccount"],
+];
 
-function Shell({ children }: { children: ReactNode }) {
-  return (
-    <>
-      <OfflineBanner />
-      <Topbar />
-      <div className="app-content">
-        <div className="app-content-inner">{children}</div>
-      </div>
-      <TabBar />
-    </>
-  );
-}
+// The customer app: top bar (logo, notifications, language), the open tab,
+// the bottom tab bar on phones (a header nav on computers), and whichever
+// full-screen flow is up (booking, reschedule, review).
+export function App() {
+  const t = useT();
+  const { ready, bootError, boot, tab, go, flow, account, unread, setLang, lang, settings } = useApp();
+  const [offline, setOffline] = useState(!navigator.onLine);
+  const [scrolled, setScrolled] = useState(false);
+  const [notifs, setNotifs] = useState(false);
 
-export default function App() {
-  const { lang, tr } = useTranslation();
-  const settings = useAppStore((s) => s.settings);
-  const bootstrapError = useAppStore((s) => s.bootstrapError);
-  const bootstrap = useAppStore((s) => s.bootstrap);
-  const tab = useAppStore((s) => s.tab);
-  const booking = useAppStore((s) => s.booking);
-  const reschedule = useAppStore((s) => s.reschedule);
-  const review = useAppStore((s) => s.review);
-  const homeVisitOpen = useAppStore((s) => s.homeVisitOpen);
-
-  useGlobalOverlayEffects();
-
+  useEffect(() => { void boot(); }, [boot]);
   useEffect(() => {
-    void bootstrap();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const on = () => setOffline(false), off = () => setOffline(true);
+    const sc = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("online", on); window.addEventListener("offline", off); window.addEventListener("scroll", sc, { passive: true });
+    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); window.removeEventListener("scroll", sc); };
   }, []);
 
-  useEffect(() => {
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-    document.body.dir = lang === "ar" ? "rtl" : "ltr";
-  }, [lang]);
-
-  useEffect(() => {
-    applyPortalAccentColor(settings?.customerPortalTheme?.accentColor);
-  }, [settings?.customerPortalTheme?.accentColor]);
-
-  if (bootstrapError) {
-    return <ConfigErrorScreen message={displayError(bootstrapError, tr)} />;
-  }
-
-  if (!settings) {
-    return (
-      <Shell>
-        <SkeletonHome />
-      </Shell>
-    );
-  }
+  const nav = (x: Tab) => { haptic(); go(x); };
+  const tabBar = (
+    <>
+      {TABS.map(([id, icon, label]) => (
+        <button key={id} className={`${id === "book" ? "book" : ""} ${(id === tab && id !== "book") || (id === "book" && flow?.kind === "book") ? "on" : ""}`} onClick={() => nav(id)} aria-current={id === tab ? "page" : undefined}>
+          <span className="ic"><Icon name={icon} size={20} /></span>{t(label)}
+        </button>
+      ))}
+    </>
+  );
 
   return (
     <>
-      <Shell>
-        {tab === "home" && <HomeView />}
-        {tab === "bookings" && <BookingsView />}
-        {tab === "branches" && <BranchesView />}
-        {tab === "points" && <PointsView />}
-        {tab === "explore" && <ExploreView />}
-        {tab === "profile" && <ProfileView />}
-      </Shell>
-      {booking && <BookingOverlay />}
-      {reschedule && <RescheduleOverlay />}
-      {review && <ReviewOverlay />}
-      {homeVisitOpen && <HomeVisitOverlay />}
+      {offline && <div className="offline">{t("offline")}</div>}
+      <header className={`top ${scrolled ? "scrolled" : ""}`}>
+        <button className="brand" onClick={() => nav("home")} aria-label="SHADI SALOON">
+          <img className="logo" src="assets/mark.png" alt="" />
+          <img className="word" src="assets/wordmark.png" alt="SHADI SALOON" />
+        </button>
+        <nav className="nav">{tabBar}</nav>
+        <div className="grow" />
+        <button className="lang-btn" onClick={() => setLang(lang === "ar" ? "en" : "ar")}>{t("langSwitch")}</button>
+        {account && (
+          <button className="icon-btn" aria-label={t("notifications")} onClick={() => setNotifs(true)}>
+            <Icon name="bell" size={20} />{unread > 0 && <span className="badge">{unread > 9 ? "9+" : unread}</span>}
+          </button>
+        )}
+      </header>
+
+      <main className="page">
+        {bootError ? (
+          <Empty icon="globe" title={t("errNetwork")}><button className="btn gold" onClick={() => location.reload()}>{t("retry")}</button></Empty>
+        ) : !ready ? <Loading /> : settings.maintenanceMode?.enabled ? (
+          <Empty icon="settings" title={settings.maintenanceMode.message || "…"} />
+        ) : (
+          <div className="view" key={tab}>
+            {tab === "home" && <Home />}
+            {tab === "bookings" && <Bookings />}
+            {tab === "explore" && <Explore />}
+            {tab === "account" && <Account />}
+          </div>
+        )}
+      </main>
+
+      <nav className="tabbar">{tabBar}</nav>
+
+      {ready && flow?.kind === "book" && <BookFlow key={JSON.stringify(flow)} start={flow} />}
+      {flow?.kind === "reschedule" && <Reschedule booking={flow.booking} />}
+      {flow?.kind === "review" && <Review booking={flow.booking} />}
+      {notifs && <Notifications onClose={() => setNotifs(false)} />}
+      <Toast />
     </>
   );
 }
