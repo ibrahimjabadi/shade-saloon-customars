@@ -15,12 +15,9 @@
     <link rel="manifest" href="%BASE_URL%manifest.json" />
     <link rel="icon" type="image/png" href="%BASE_URL%assets/icon-192.png" />
     <link rel="apple-touch-icon" href="%BASE_URL%assets/icon-192.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <!-- fonts are self-hosted (public/fonts): no extra connections to Google before text can show -->
+    <link rel="preload" href="%BASE_URL%fonts/cairo-arabic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="%BASE_URL%fonts/fonts.css" />
     <script src="%BASE_URL%config.js"></script>
   </head>
   <body>
